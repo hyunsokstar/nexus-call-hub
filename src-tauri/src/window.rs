@@ -78,7 +78,12 @@ impl WindowConfigs {
             WindowType::Launcher => WindowConfig {
                 label: "launcher".to_string(),
                 title: "Nexus Call Hub - 런처".to_string(),
-                url: "launcher/index.html".to_string(),
+                // 🔥 TanStack Router 루트 경로로 수정
+                url: if cfg!(dev) {
+                    "http://localhost:1420/".to_string()
+                } else {
+                    "index.html".to_string()
+                },
                 width: 400.0,
                 height: 600.0,
                 min_width: Some(380.0),
@@ -96,7 +101,12 @@ impl WindowConfigs {
             WindowType::Login => WindowConfig {
                 label: "login".to_string(),
                 title: "Nexus Call Hub - 로그인".to_string(),
-                url: "login/index.html".to_string(),
+                // 🔥 로그인 라우트로 직접 이동
+                url: if cfg!(dev) {
+                    "http://localhost:1420/login".to_string()
+                } else {
+                    "index.html#/login".to_string()
+                },
                 width: 450.0,
                 height: 500.0,
                 min_width: Some(400.0),
@@ -114,7 +124,12 @@ impl WindowConfigs {
             WindowType::CallOutbound => WindowConfig {
                 label: "call_outbound".to_string(),
                 title: "Nexus Call Hub - 발신 통화".to_string(),
-                url: "call/outbound.html".to_string(),
+                // 🔥 대시보드 라우트로 수정
+                url: if cfg!(dev) {
+                    "http://localhost:1420/dashboard".to_string()
+                } else {
+                    "index.html#/dashboard".to_string()
+                },
                 width: 350.0,
                 height: 500.0,
                 min_width: Some(320.0),
@@ -132,7 +147,12 @@ impl WindowConfigs {
             WindowType::CallInbound => WindowConfig {
                 label: "call_inbound".to_string(),
                 title: "Nexus Call Hub - 수신 통화".to_string(),
-                url: "call/inbound.html".to_string(),
+                // 🔥 대시보드 라우트로 수정 (통화 관련은 대시보드에서 통합 관리)
+                url: if cfg!(dev) {
+                    "http://localhost:1420/dashboard".to_string()
+                } else {
+                    "index.html#/dashboard".to_string()
+                },
                 width: 350.0,
                 height: 400.0,
                 min_width: Some(320.0),
@@ -150,7 +170,12 @@ impl WindowConfigs {
             WindowType::Statistics => WindowConfig {
                 label: "statistics".to_string(),
                 title: "Nexus Call Hub - 통계".to_string(),
-                url: "statistics/index.html".to_string(),
+                // 🔥 통계 라우트로 수정
+                url: if cfg!(dev) {
+                    "http://localhost:1420/statistics".to_string()
+                } else {
+                    "index.html#/statistics".to_string()
+                },
                 width: 1000.0,
                 height: 700.0,
                 min_width: Some(800.0),
@@ -168,7 +193,12 @@ impl WindowConfigs {
             WindowType::Settings => WindowConfig {
                 label: "settings".to_string(),
                 title: "Nexus Call Hub - 환경설정".to_string(),
-                url: "settings/index.html".to_string(),
+                // 🔥 설정 라우트로 수정
+                url: if cfg!(dev) {
+                    "http://localhost:1420/settings".to_string()
+                } else {
+                    "index.html#/settings".to_string()
+                },
                 width: 600.0,
                 height: 500.0,
                 min_width: Some(500.0),
