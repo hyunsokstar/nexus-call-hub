@@ -1,3 +1,4 @@
+// C:\pilot-tauri\nexus-call-hub\tailwind.config.js
 /** @type {import('tailwindcss').Config} */
 export default {
     content: [
