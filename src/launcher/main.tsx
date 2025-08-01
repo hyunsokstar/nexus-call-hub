@@ -1,10 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./app/App";
-import "./index.css";
+import "../launcher.css";
+import LauncherApp from "./LauncherApp";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+    <React.StrictMode>
+        <LauncherApp />
+    </React.StrictMode>,
 );
