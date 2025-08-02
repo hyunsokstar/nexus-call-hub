@@ -45,12 +45,12 @@ impl WindowType {
         }
     }
 
-    // 모든 윈도우는 같은 앱을 로드 - 라우팅은 React에서 담당
+    // 각 윈도우별 독립 HTML 파일 로드
     pub fn url(&self) -> String {
         if cfg!(dev) {
-            "http://localhost:1420".to_string()
+            format!("http://localhost:1420/{}.html", self.as_str())
         } else {
-            "index.html".to_string()
+            format!("{}.html", self.as_str())
         }
     }
 }
