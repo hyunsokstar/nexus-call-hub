@@ -1,7 +1,13 @@
 // src/routes/login.tsx
 import React, { useState } from 'react'
-import { useNavigate } from '@tanstack/react-router'  // createFileRoute 제거
+import { useNavigate } from '@tanstack/react-router'
 import { Button } from '@/shared/ui/button'
+import { Input } from '@/shared/ui/input'
+import { Label } from '@/shared/ui/label'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card'
+import { Checkbox } from '@/shared/ui/checkbox'
+import { ArrowLeft, Loader2, Shield, Server, Wifi } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 function LoginPage() {
   const navigate = useNavigate()
@@ -10,6 +16,7 @@ function LoginPage() {
     password: ''
   })
   const [isLoading, setIsLoading] = useState(false)
+  const [rememberMe, setRememberMe] = useState(false)
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -25,16 +32,14 @@ function LoginPage() {
 
     try {
       // 임시 로그인 로직
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      await new Promise(resolve => setTimeout(resolve, 2000))
       console.log('로그인 시도:', formData)
 
-      // 로그인 성공 후 홈으로 이동 (dashboard는 아직 없으니)
-      alert('로그인 성공!')
-      navigate({ to: '/' })
+      // 로그인 성공 후 대시보드로 이동
+      navigate({ to: '/dashboard' })
 
     } catch (error) {
       console.error('로그인 실패:', error)
-      alert('로그인에 실패했습니다.')
     } finally {
       setIsLoading(false)
     }
@@ -45,137 +50,181 @@ function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 px-6 py-4">
-        <div className="flex items-center justify-between">
+      <header className="relative bg-white/80 backdrop-blur-sm border-b border-slate-200/60 px-6 py-4">
+        <div className="flex items-center justify-between max-w-7xl mx-auto">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-              <span className="text-white text-sm font-bold">N</span>
+            <div className="relative">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
+                <span className="text-white text-lg font-bold">N</span>
+              </div>
+              <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
             </div>
             <div>
-              <h1 className="text-lg font-semibold text-gray-900">Nexus Call Hub</h1>
-              <p className="text-xs text-gray-500">로그인</p>
+              <h1 className="text-xl font-semibold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
+                Nexus Call Hub
+              </h1>
+              <p className="text-sm text-slate-500 font-medium">통합 상담 관리 시스템</p>
             </div>
           </div>
           <Button
             variant="ghost"
             size="sm"
             onClick={handleBack}
-            className="text-gray-500 hover:text-gray-700"
+            className="text-slate-500 hover:text-slate-700 hover:bg-slate-100 gap-2"
           >
-            ← 돌아가기
+            <ArrowLeft className="w-4 h-4" />
+            돌아가기
           </Button>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 flex items-center justify-center p-6">
-        <div className="w-full max-w-sm">
-          <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
-            <div className="text-center mb-6">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-blue-600 text-2xl">👤</span>
-              </div>
-              <h2 className="text-xl font-semibold text-gray-900 mb-2">로그인</h2>
-              <p className="text-sm text-gray-600">상담사 계정으로 로그인하세요</p>
-            </div>
+      <main className="flex-1 flex items-center justify-center p-6 relative">
+        {/* Background decoration */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-200/30 rounded-full blur-3xl"></div>
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-indigo-200/30 rounded-full blur-3xl"></div>
+        </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
-                  사용자명
-                </label>
-                <input
-                  type="text"
-                  id="username"
-                  name="username"
-                  value={formData.username}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="사용자명을 입력하세요"
-                  required
-                />
-              </div>
-
-              <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                  비밀번호
-                </label>
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="비밀번호를 입력하세요"
-                  required
-                />
-              </div>
-
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  id="remember"
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                />
-                <label htmlFor="remember" className="ml-2 block text-sm text-gray-700">
-                  로그인 상태 유지
-                </label>
-              </div>
-
-              <Button
-                type="submit"
-                className="w-full h-11 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                    로그인 중...
+        <div className="w-full max-w-md relative">
+          <Card className="shadow-2xl border-0 bg-white/95 backdrop-blur-sm">
+            <CardHeader className="space-y-6 pb-8">
+              <div className="flex justify-center">
+                <div className="relative">
+                  <div className="w-20 h-20 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-2xl flex items-center justify-center shadow-inner">
+                    <Shield className="w-10 h-10 text-blue-600" />
                   </div>
-                ) : (
-                  '로그인'
-                )}
-              </Button>
-            </form>
+                  <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                    <div className="w-2 h-2 bg-white rounded-full"></div>
+                  </div>
+                </div>
+              </div>
+              <div className="text-center space-y-2">
+                <CardTitle className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
+                  상담사 로그인
+                </CardTitle>
+                <CardDescription className="text-slate-600">
+                  보안 인증을 통해 상담 시스템에 접속하세요
+                </CardDescription>
+              </div>
+            </CardHeader>
 
-            <div className="mt-6 text-center">
-              <p className="text-xs text-gray-500">
-                문제가 있으신가요?{' '}
-                <button className="text-blue-600 hover:text-blue-700 font-medium">
-                  관리자에게 문의
-                </button>
-              </p>
-            </div>
-          </div>
+            <CardContent className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div className="space-y-2">
+                  <Label htmlFor="username" className="text-sm font-medium text-slate-700">
+                    사용자명
+                  </Label>
+                  <Input
+                    id="username"
+                    name="username"
+                    type="text"
+                    value={formData.username}
+                    onChange={handleInputChange}
+                    placeholder="상담사 ID를 입력하세요"
+                    className="h-11 bg-slate-50 border-slate-200 focus:bg-white transition-colors"
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="password" className="text-sm font-medium text-slate-700">
+                    비밀번호
+                  </Label>
+                  <Input
+                    id="password"
+                    name="password"
+                    type="password"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    placeholder="비밀번호를 입력하세요"
+                    className="h-11 bg-slate-50 border-slate-200 focus:bg-white transition-colors"
+                    required
+                  />
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="remember"
+                    checked={rememberMe}
+                    onCheckedChange={(checked) => setRememberMe(checked === true)}
+                    className="data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
+                  />
+                  <Label htmlFor="remember" className="text-sm text-slate-700 cursor-pointer">
+                    로그인 상태 유지 (7일)
+                  </Label>
+                </div>
+
+                <Button
+                  type="submit"
+                  disabled={isLoading}
+                  className={cn(
+                    "w-full h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700",
+                    "text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200",
+                    "disabled:opacity-50 disabled:cursor-not-allowed"
+                  )}
+                >
+                  {isLoading ? (
+                    <div className="flex items-center gap-2">
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      인증 중...
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <Shield className="w-5 h-5" />
+                      보안 로그인
+                    </div>
+                  )}
+                </Button>
+              </form>
+
+              <div className="text-center pt-4 border-t border-slate-100">
+                <p className="text-sm text-slate-500">
+                  로그인에 문제가 있으신가요?{' '}
+                  <button className="text-blue-600 hover:text-blue-700 font-medium underline-offset-4 hover:underline transition-colors">
+                    IT 지원팀 문의
+                  </button>
+                </p>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="p-4">
-        <div className="bg-white border border-gray-200 rounded-lg p-3">
-          <div className="flex items-center justify-center gap-6 text-xs text-gray-600">
-            <div className="flex items-center gap-1.5">
-              <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
-              <span>시스템 정상</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
-              <span>서버 연결됨</span>
-            </div>
-          </div>
+      {/* Enhanced Footer */}
+      <footer className="p-6">
+        <div className="max-w-md mx-auto">
+          <Card className="bg-white/90 backdrop-blur-sm border-slate-200/60 shadow-lg">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-center gap-8 text-sm">
+                <div className="flex items-center gap-2">
+                  <div className="relative">
+                    <Server className="w-4 h-4 text-green-600" />
+                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  </div>
+                  <span className="text-slate-700 font-medium">시스템 정상</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="relative">
+                    <Wifi className="w-4 h-4 text-blue-600" />
+                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                  </div>
+                  <span className="text-slate-700 font-medium">네트워크 연결</span>
+                </div>
+              </div>
+              <div className="text-center mt-3 pt-3 border-t border-slate-100">
+                <p className="text-xs text-slate-500">
+                  © 2024 Nexus Call Hub. 보안 연결로 보호됨
+                </p>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </footer>
     </div>
   )
 }
 
-// 이 부분이 중요! ✨
 export default LoginPage
-
-// 기존의 이 부분은 삭제:
-// export const Route = createFileRoute('/login')({
-//   component: LoginPage,
-// })

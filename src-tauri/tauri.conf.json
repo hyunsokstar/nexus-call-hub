@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "nexus-call-hub",
+  "productName": "Nexus Call Hub",
   "version": "0.1.0",
   "identifier": "kr.nexus.callhub",
   "build": {
@@ -12,9 +12,16 @@
   "app": {
     "windows": [
       {
-        "title": "nexus-call-hub",
-        "width": 800,
-        "height": 600
+        "label": "launcher",
+        "title": "Nexus Call Hub - 런처",
+        "url": "launcher.html",
+        "width": 400,
+        "height": 600,
+        "resizable": true,
+        "center": true,
+        "decorations": true,
+        "alwaysOnTop": false,
+        "skipTaskbar": false
       }
     ],
     "security": {
@@ -30,6 +37,15 @@
       "icons/128x128@2x.png",
       "icons/icon.icns",
       "icons/icon.ico"
-    ]
-  }
+    ],
+    "publisher": "Nexus",
+    "category": "Productivity",
+    "shortDescription": "A modern call hub application",
+    "longDescription": "Nexus Call Hub is a comprehensive communication platform for managing calls and contacts.",
+    "resources": [],
+    "copyright": "Copyright © 2025 Nexus. All rights reserved.",
+    "license": "",
+    "licenseFile": ""
+  },
+  "plugins": {}
 }

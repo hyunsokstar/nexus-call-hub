@@ -1,5 +1,5 @@
 // src/routes/settings.tsx
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { Button } from '@/shared/ui/button'
 

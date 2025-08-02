@@ -1,28 +1,48 @@
-// src/routes/index.tsx
-// import React from "react"
-import { useNavigate } from '@tanstack/react-router'
+// C:\pilot-tauri\nexus-call-hub\src\launcher\LauncherApp.tsx
+import { invoke } from "@tauri-apps/api/core"
 import { Button } from "@/shared/ui/button"
 
-function LauncherPage() {
-    const navigate = useNavigate()
-
-    const handleLoginClick = () => {
-        navigate({ to: '/login' })
+function LauncherApp() {
+    // 런처 → 로그인 전환
+    const handleLoginClick = async () => {
+        try {
+            await invoke('switch_window', {
+                fromLabel: 'launcher',
+                toWindowType: 'Login'
+            })
+        } catch (error) {
+            console.error("로그인 윈도우 전환 실패:", error)
+        }
     }
 
-    const handleCallDashboardClick = () => {
-        // 나중에 구현
-        console.log('대시보드로 이동')
+    // 런처 → 통화 대시보드 전환
+    const handleCallDashboardClick = async () => {
+        try {
+            await invoke('switch_window', {
+                fromLabel: 'launcher',
+                toWindowType: 'CallOutbound'
+            })
+        } catch (error) {
+            console.error("통화 대시보드 전환 실패:", error)
+        }
     }
 
-    const handleStatsClick = () => {
-        // 나중에 구현
-        console.log('통계로 이동')
+    // 런처와 함께 통계 윈도우 열기
+    const handleStatsClick = async () => {
+        try {
+            await invoke('open_window', { windowType: 'Statistics' })
+        } catch (error) {
+            console.error("통계 윈도우 열기 실패:", error)
+        }
     }
 
-    const handleSettingsClick = () => {
-        // 나중에 구현
-        console.log('설정으로 이동')
+    // 런처와 함께 설정 윈도우 열기
+    const handleSettingsClick = async () => {
+        try {
+            await invoke('open_window', { windowType: 'Settings' })
+        } catch (error) {
+            console.error("설정 윈도우 열기 실패:", error)
+        }
     }
 
     return (
@@ -44,7 +64,7 @@ function LauncherPage() {
             <main className="flex-1 flex items-center justify-center p-6">
                 <div className="w-full max-w-sm">
                     <div className="grid grid-cols-2 gap-4">
-                        {/* 로그인 버튼 */}
+                        {/* 로그인 버튼 - 전환 방식 */}
                         <Button
                             className="h-24 flex flex-col items-center justify-center gap-2 bg-white hover:bg-blue-50 hover:border-blue-200 border border-gray-200 rounded-xl transition-all duration-200 group"
                             onClick={handleLoginClick}
@@ -56,7 +76,7 @@ function LauncherPage() {
                             <span className="text-sm font-medium text-gray-900">로그인</span>
                         </Button>
 
-                        {/* 통화 대시보드 버튼 */}
+                        {/* 통화 대시보드 버튼 - 전환 방식 */}
                         <Button
                             className="h-24 flex flex-col items-center justify-center gap-2 bg-white hover:bg-green-50 hover:border-green-200 border border-gray-200 rounded-xl transition-all duration-200 group"
                             onClick={handleCallDashboardClick}
@@ -68,7 +88,7 @@ function LauncherPage() {
                             <span className="text-sm font-medium text-gray-900">통화</span>
                         </Button>
 
-                        {/* 통계 버튼 */}
+                        {/* 통계 버튼 - 추가 윈도우 방식 */}
                         <Button
                             className="h-24 flex flex-col items-center justify-center gap-2 bg-white hover:bg-orange-50 hover:border-orange-200 border border-gray-200 rounded-xl transition-all duration-200 group"
                             onClick={handleStatsClick}
@@ -80,7 +100,7 @@ function LauncherPage() {
                             <span className="text-sm font-medium text-gray-900">통계</span>
                         </Button>
 
-                        {/* 환경설정 버튼 */}
+                        {/* 환경설정 버튼 - 추가 윈도우 방식 */}
                         <Button
                             className="h-24 flex flex-col items-center justify-center gap-2 bg-white hover:bg-gray-50 hover:border-gray-300 border border-gray-200 rounded-xl transition-all duration-200 group"
                             onClick={handleSettingsClick}
@@ -114,5 +134,4 @@ function LauncherPage() {
     )
 }
 
-// createFileRoute 제거하고 default export로 변경
-export default LauncherPage
+export default LauncherApp

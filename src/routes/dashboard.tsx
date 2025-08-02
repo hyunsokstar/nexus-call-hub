@@ -1,5 +1,5 @@
 // src/routes/dashboard.tsx
-import React from 'react'
+// import React from 'react'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { Button } from '@/shared/ui/button'
 
