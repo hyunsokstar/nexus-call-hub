@@ -39,7 +39,7 @@ impl WindowType {
 
     pub fn size(&self) -> (f64, f64) {
         match self {
-            Self::Launcher => (500.0, 700.0),      // 런처: 적당한 크기
+            Self::Launcher => (800.0, 700.0),      // 런처: 적당한 크기
             Self::Login => (450.0, 500.0),         // 로그인: 작은 크기
             Self::CallOutbound => (1200.0, 800.0), // 아웃바운드: 넓은 화면 (캠페인 정보 + 스크립트)
             Self::CallInbound => (1300.0, 900.0), // 인바운드: 가장 큰 화면 ✅ (고객 정보 + 상담 내용)

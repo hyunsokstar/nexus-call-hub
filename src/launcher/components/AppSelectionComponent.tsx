@@ -1,7 +1,8 @@
 // C:\pilot-tauri\nexus-call-hub\src\launcher\components\AppSelectionComponent.tsx
 import { invoke } from "@tauri-apps/api/core"
 import { Button } from "@/shared/ui/button"
-import { User } from "../api/types"
+import { User } from "../../shared/api/types"
+import CommonHeader from "@/widgets/CommonHeader"
 
 // 상담사용 앱들
 const consultantApps = [
@@ -124,40 +125,15 @@ function AppSelectionComponent({ user, onLogout }: AppSelectionComponentProps) {
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col">
-            {/* Header with User Info */}
-            <header className="bg-white border-b border-gray-200 px-6 py-4">
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                            <span className="text-white text-sm font-bold">N</span>
-                        </div>
-                        <div>
-                            <h1 className="text-lg font-semibold text-gray-900">Nexus Call Hub</h1>
-                            <p className="text-xs text-gray-500">통합 상담 시스템</p>
-                        </div>
-                    </div>
-
-                    {/* User Info */}
-                    <div className="flex items-center gap-3">
-                        <div className="text-right">
-                            <p className="text-sm font-medium text-gray-900">{user.name}</p>
-                            <p className="text-xs text-gray-500">{user.department} · {user.role}</p>
-                        </div>
-                        <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                            <span className="text-blue-600 text-sm font-medium">
-                                {user.name[0]}
-                            </span>
-                        </div>
-                        <Button
-                            onClick={onLogout}
-                            variant="outline"
-                            className="ml-2 text-xs px-3 py-1 h-7"
-                        >
-                            로그아웃
-                        </Button>
-                    </div>
-                </div>
-            </header>
+            {/* CommonHeader 적용 */}
+            <CommonHeader
+                title="Nexus Call Hub"
+                subtitle="통합 상담 시스템"
+                icon="N"
+                user={user}
+                showBackButton={false}
+                showLogout={true}
+            />
 
             {/* Main Content */}
             <main className="flex-1 p-6">
@@ -233,6 +209,7 @@ function AppSelectionComponent({ user, onLogout }: AppSelectionComponentProps) {
                     </div>
                 </div>
             </footer>
+
         </div>
     )
 }

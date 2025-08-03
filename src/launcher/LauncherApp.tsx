@@ -1,9 +1,9 @@
 // C:\pilot-tauri\nexus-call-hub\src\launcher\LauncherApp.tsx
 import { invoke } from "@tauri-apps/api/core"
 import { useState, useEffect } from "react"
-import LoginComponent from "./components/LoginComponent"
+import LoginComponent from "../widgets/LoginForm/LoginComponent"
 import AppSelectionComponent from "./components/AppSelectionComponent"
-import { User } from "./api/types"
+import { User } from "../shared/api/types"
 
 function LauncherApp() {
     const [user, setUser] = useState<User | null>(null)

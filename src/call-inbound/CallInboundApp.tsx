@@ -1,6 +1,7 @@
 // C:\pilot-tauri\nexus-call-hub\src\call-inbound\CallInboundApp.tsx
 import React, { useState, useEffect } from 'react';
-import { invoke } from '@tauri-apps/api/core';
+import CommonHeader from '../widgets/CommonHeader';
+import { useTauriUser } from '../shared/hooks/useAuth';
 
 interface User {
     id: string;
@@ -22,7 +23,7 @@ interface InboundCall {
 type AgentStatus = 'available' | 'busy' | 'break' | 'offline';
 
 const CallInboundApp = () => {
-    const [user, setUser] = useState<User | null>(null);
+    const { data: user } = useTauriUser();
     const [agentStatus, setAgentStatus] = useState<AgentStatus>('offline');
     const [currentCall, setCurrentCall] = useState<InboundCall | null>(null);
     const [callDuration, setCallDuration] = useState(0);
@@ -30,18 +31,8 @@ const CallInboundApp = () => {
     const [customerNotes, setCustomerNotes] = useState('');
 
     useEffect(() => {
-        // Tauri State에서 사용자 정보 가져오기
-        const fetchUser = async () => {
-            try {
-                const userData = await invoke('get_user');
-                setUser(userData as User);
-                loadSampleData();
-            } catch (error) {
-                console.error('사용자 정보 가져오기 실패:', error);
-            }
-        };
-
-        fetchUser();
+        // 데이터 로드
+        loadSampleData();
     }, []);
 
     // 통화 시간 카운터
@@ -124,17 +115,6 @@ const CallInboundApp = () => {
         return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     };
 
-    const handleBackToLauncher = async () => {
-        try {
-            await invoke('switch_window', {
-                fromLabel: 'callinbound',
-                toWindowType: 'Launcher'
-            });
-        } catch (error) {
-            console.error('런처로 돌아가기 실패:', error);
-        }
-    };
-
     const getStatusColor = (status: AgentStatus) => {
         switch (status) {
             case 'available': return 'bg-green-500';
@@ -182,65 +162,15 @@ const CallInboundApp = () => {
 
     return (
         <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb', display: 'flex', flexDirection: 'column' }}>
-            {/* Header */}
-            <header style={{
-                backgroundColor: 'white',
-                borderBottom: '1px solid #e5e7eb',
-                padding: '16px 24px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between'
-            }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <button
-                        onClick={handleBackToLauncher}
-                        style={{
-                            padding: '4px 12px',
-                            fontSize: '12px',
-                            border: '1px solid #d1d5db',
-                            borderRadius: '6px',
-                            background: 'white',
-                            cursor: 'pointer'
-                        }}
-                    >
-                        ← 메인
-                    </button>
+            {/* 공통 헤더 사용 */}
+            <CommonHeader
+                title="인바운드 상담"
+                subtitle="고객 문의 자동 분배"
+                icon="📞"
+                user={user}
+                showBackButton={true}
+                customActions={
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <div style={{
-                            width: '32px',
-                            height: '32px',
-                            backgroundColor: '#2563eb',
-                            borderRadius: '8px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            fontSize: '14px',
-                            fontWeight: 'bold',
-                            color: 'white'
-                        }}>
-                            📞
-                        </div>
-                        <div>
-                            <h1 style={{ fontSize: '18px', fontWeight: '600', color: '#111827', margin: 0 }}>
-                                인바운드 상담
-                            </h1>
-                            <p style={{ fontSize: '12px', color: '#6b7280', margin: 0 }}>
-                                고객 문의 자동 분배
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                {user && (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <div style={{ textAlign: 'right' }}>
-                            <p style={{ fontSize: '14px', fontWeight: '500', color: '#111827', margin: 0 }}>
-                                {user.name}
-                            </p>
-                            <p style={{ fontSize: '12px', color: '#6b7280', margin: 0 }}>
-                                {user.department}
-                            </p>
-                        </div>
                         <div style={{
                             width: '12px',
                             height: '12px',
@@ -250,8 +180,8 @@ const CallInboundApp = () => {
                             {getStatusText(agentStatus)}
                         </span>
                     </div>
-                )}
-            </header>
+                }
+            />
 
             <div style={{ flex: 1, display: 'flex' }}>
                 {/* 사이드바 - 상담원 상태 및 대기열 */}

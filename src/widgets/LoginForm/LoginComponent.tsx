@@ -1,7 +1,8 @@
 // C:\pilot-tauri\nexus-call-hub\src\launcher\components\LoginComponent.tsx
 import { useState } from "react"
-import { useLogin } from "../hooks/useAuth"
-import { User } from "../api/types"
+import { useLogin } from "../../shared/hooks/useAuth"
+import { User } from "../../shared/api/types"
+// import { User } from "@/shared/api/types"
 
 interface LoginComponentProps {
     onLoginSuccess: (user: User) => void
