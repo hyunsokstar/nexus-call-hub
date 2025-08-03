@@ -1,14 +1,7 @@
 // C:\pilot-tauri\nexus-call-hub\src\launcher\components\LoginComponent.tsx
 import { useState } from "react"
-import { invoke } from "@tauri-apps/api/core"
-
-interface User {
-    id: string
-    name: string
-    department: string
-    role: string
-    token: string
-}
+import { useLogin } from "../hooks/useAuth"
+import { User } from "../api/types"
 
 interface LoginComponentProps {
     onLoginSuccess: (user: User) => void
@@ -19,45 +12,51 @@ function LoginComponent({ onLoginSuccess }: LoginComponentProps) {
         username: "",
         password: ""
     })
-    const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState("")
+
+    // React Query 로그인 뮤테이션 사용
+    const loginMutation = useLogin()
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault()
-        setIsLoading(true)
         setError("")
 
         try {
-            // 로그인 시뮬레이션 (실제로는 API 호출)
-            await new Promise(resolve => setTimeout(resolve, 1000))
+            const result = await loginMutation.mutateAsync(credentials)
 
-            // 샘플 사용자 데이터
-            const userData: User = {
-                id: Date.now().toString(),
-                name: credentials.username || '홍길동',
-                department: credentials.username.includes('관리') ? '관리팀' : '고객상담팀',
-                role: credentials.username.includes('관리') ? '관리자' : '상담원',
-                token: 'sample-jwt-token-' + Date.now()
+            if (result.success && result.data) {
+                // 백엔드 응답을 Tauri State 형식으로 변환
+                const user: User = {
+                    id: result.data.username,
+                    name: result.data.username,
+                    department: '고객상담팀', // 추후 백엔드 /auth/me API에서 받아올 예정
+                    role: '상담원', // 추후 백엔드 /auth/me API에서 받아올 예정
+                    token: result.data.token
+                }
+
+                // 부모 컴포넌트에 로그인 성공 알림
+                onLoginSuccess(user)
+            } else {
+                setError(result.message || '로그인에 실패했습니다.')
             }
+        } catch (error: any) {
+            console.error('로그인 에러:', error)
 
-            // Tauri State에 사용자 정보 저장
-            await invoke('login_user', { user: userData })
-
-            // 부모 컴포넌트에 로그인 성공 알림
-            onLoginSuccess(userData)
-
-        } catch (error) {
-            console.error('로그인 실패:', error)
-            setError('로그인에 실패했습니다. 다시 시도해주세요.')
-        } finally {
-            setIsLoading(false)
+            // 에러 메시지 처리
+            if (error.response?.data?.message) {
+                setError(error.response.data.message)
+            } else if (error.message) {
+                setError(error.message)
+            } else {
+                setError('네트워크 오류가 발생했습니다. 서버가 실행 중인지 확인해주세요.')
+            }
         }
     }
 
     const handleQuickLogin = async (type: 'agent' | 'manager') => {
         const quickCredentials = {
-            username: type === 'agent' ? '상담원1' : '관리자1',
-            password: 'password'
+            username: type === 'agent' ? 'terecat' : '관리자1', // 백엔드에 맞게 수정
+            password: type === 'agent' ? '1234' : 'password'
         }
 
         setCredentials(quickCredentials)
@@ -131,7 +130,7 @@ function LoginComponent({ onLoginSuccess }: LoginComponentProps) {
                                 }}
                                 placeholder="사용자명을 입력하세요"
                                 required
-                                disabled={isLoading}
+                                disabled={loginMutation.isPending}
                             />
                         </div>
 
@@ -159,7 +158,7 @@ function LoginComponent({ onLoginSuccess }: LoginComponentProps) {
                                 }}
                                 placeholder="비밀번호를 입력하세요"
                                 required
-                                disabled={isLoading}
+                                disabled={loginMutation.isPending}
                             />
                         </div>
 
@@ -178,23 +177,23 @@ function LoginComponent({ onLoginSuccess }: LoginComponentProps) {
 
                         <button
                             type="submit"
-                            disabled={isLoading}
+                            disabled={loginMutation.isPending}
                             style={{
                                 width: '100%',
                                 padding: '10px',
                                 border: 'none',
                                 borderRadius: '12px',
-                                background: isLoading ? '#9ca3af' : '#2563eb',
+                                background: loginMutation.isPending ? '#9ca3af' : '#2563eb',
                                 color: 'white',
                                 fontSize: '14px',
-                                cursor: isLoading ? 'not-allowed' : 'pointer',
+                                cursor: loginMutation.isPending ? 'not-allowed' : 'pointer',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 gap: '8px'
                             }}
                         >
-                            {isLoading && (
+                            {loginMutation.isPending && (
                                 <div style={{
                                     width: '16px',
                                     height: '16px',
@@ -204,7 +203,7 @@ function LoginComponent({ onLoginSuccess }: LoginComponentProps) {
                                     animation: 'spin 1s linear infinite'
                                 }}></div>
                             )}
-                            {isLoading ? '로그인 중...' : '로그인'}
+                            {loginMutation.isPending ? '로그인 중...' : '로그인'}
                         </button>
                     </form>
 
@@ -226,7 +225,7 @@ function LoginComponent({ onLoginSuccess }: LoginComponentProps) {
                             <button
                                 type="button"
                                 onClick={() => handleQuickLogin('agent')}
-                                disabled={isLoading}
+                                disabled={loginMutation.isPending}
                                 style={{
                                     flex: 1,
                                     padding: '6px 10px',
@@ -235,15 +234,15 @@ function LoginComponent({ onLoginSuccess }: LoginComponentProps) {
                                     background: 'white',
                                     color: '#374151',
                                     fontSize: '11px',
-                                    cursor: isLoading ? 'not-allowed' : 'pointer'
+                                    cursor: loginMutation.isPending ? 'not-allowed' : 'pointer'
                                 }}
                             >
-                                상담원
+                                상담원 (terecat)
                             </button>
                             <button
                                 type="button"
                                 onClick={() => handleQuickLogin('manager')}
-                                disabled={isLoading}
+                                disabled={loginMutation.isPending}
                                 style={{
                                     flex: 1,
                                     padding: '6px 10px',
@@ -252,7 +251,7 @@ function LoginComponent({ onLoginSuccess }: LoginComponentProps) {
                                     background: 'white',
                                     color: '#374151',
                                     fontSize: '11px',
-                                    cursor: isLoading ? 'not-allowed' : 'pointer'
+                                    cursor: loginMutation.isPending ? 'not-allowed' : 'pointer'
                                 }}
                             >
                                 관리자
@@ -261,7 +260,7 @@ function LoginComponent({ onLoginSuccess }: LoginComponentProps) {
                     </div>
                 </div>
 
-                {/* 상태 표시 - 간소화 */}
+                {/* 상태 표시 */}
                 <div style={{ textAlign: 'center', marginTop: '16px' }}>
                     <div style={{
                         display: 'inline-flex',
