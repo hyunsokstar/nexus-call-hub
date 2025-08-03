@@ -20,7 +20,7 @@ export const useLogin = () => {
                 }
 
                 // Tauri State에 사용자 정보 저장
-                // await invoke('login_user', { user })
+                await invoke('login_user', { user })
 
                 console.log('로그인 성공 및 Tauri State 저장 완료')
             }

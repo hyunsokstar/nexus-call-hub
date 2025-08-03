@@ -237,7 +237,7 @@ function LoginComponent({ onLoginSuccess }: LoginComponentProps) {
                                     cursor: loginMutation.isPending ? 'not-allowed' : 'pointer'
                                 }}
                             >
-                                상담원 (terecat)
+                                상담원 (terecal)
                             </button>
                             <button
                                 type="button"
