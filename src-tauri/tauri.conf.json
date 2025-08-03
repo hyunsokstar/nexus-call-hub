@@ -12,9 +12,9 @@
   "app": {
     "windows": [
       {
-        "label": "launcher",
-        "title": "Nexus Call Hub - 런처",
-        "url": "launcher.html",
+        "label": "login",
+        "title": "Nexus Call Hub - 로그인",
+        "url": "login.html",
         "width": 400,
         "height": 600,
         "resizable": true,
