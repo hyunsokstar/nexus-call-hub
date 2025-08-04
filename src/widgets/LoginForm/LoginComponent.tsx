@@ -10,8 +10,8 @@ interface LoginComponentProps {
 
 function LoginComponent({ onLoginSuccess }: LoginComponentProps) {
     const [credentials, setCredentials] = useState({
-        username: "",
-        password: ""
+        username: "terecal",
+        password: "1234"
     })
     const [error, setError] = useState("")
 

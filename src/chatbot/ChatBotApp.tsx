@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
+import { useChatbot } from '../shared/hooks/useChatbot'
 import { Input } from '../shared/ui/input'
 // Card 관련 import 제거 (사용하지 않음)
 import CommonHeader from '@/widgets/CommonHeader'
@@ -13,6 +14,7 @@ interface Message {
 }
 
 const ChatBotApp: React.FC = () => {
+    const chatbotMutation = useChatbot();
     const [messages, setMessages] = useState<Message[]>([
         {
             id: '1',
@@ -67,17 +69,31 @@ const ChatBotApp: React.FC = () => {
         setInputMessage('')
         setIsLoading(true)
 
-        // 봇 응답 시뮬레이션 (1초 딜레이)
-        setTimeout(() => {
-            const botMessage: Message = {
-                id: (Date.now() + 1).toString(),
-                text: getBotResponse(inputMessage),
-                sender: 'bot',
-                timestamp: new Date()
+        chatbotMutation.mutate(
+            { message: inputMessage },
+            {
+                onSuccess: (data) => {
+                    const botMessage: Message = {
+                        id: (Date.now() + 1).toString(),
+                        text: data.response,
+                        sender: 'bot',
+                        timestamp: new Date()
+                    }
+                    setMessages(prev => [...prev, botMessage])
+                    setIsLoading(false)
+                },
+                onError: () => {
+                    const botMessage: Message = {
+                        id: (Date.now() + 1).toString(),
+                        text: '서버 오류가 발생했습니다.',
+                        sender: 'bot',
+                        timestamp: new Date()
+                    }
+                    setMessages(prev => [...prev, botMessage])
+                    setIsLoading(false)
+                }
             }
-            setMessages(prev => [...prev, botMessage])
-            setIsLoading(false)
-        }, 1000)
+        )
     }
 
     const handleKeyPress = (e: React.KeyboardEvent) => {
