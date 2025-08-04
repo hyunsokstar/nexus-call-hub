@@ -1,11 +1,12 @@
-// C:\pilot-tauri\nexus-call-hub\src\launcher\api\client.ts// C:\pilot-tauri\nexus-call-hub\src\launcher\api\client.ts
+// C:\pilot-tauri\nexus-call-hub\src\launcher\api\client.ts
 import axios from 'axios'
 
 // API 베이스 설정
 export const apiClient = axios.create({
     baseURL: 'http://localhost:8080',
     headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json; charset=utf-8',
+        'Accept': 'application/json; charset=utf-8',
     },
     timeout: 10000, // 10초 타임아웃
 })
