@@ -2,7 +2,6 @@
 import { defineConfig } from "vite"
 import react from "@vitejs/plugin-react"
 import path from "path"
-import { tanstackRouter } from '@tanstack/router-plugin/vite'
 import tailwindcss from '@tailwindcss/vite'
 
 
@@ -11,10 +10,6 @@ const host = process.env.TAURI_DEV_HOST
 export default defineConfig({
   plugins: [
     tailwindcss(),
-    tanstackRouter({
-      target: 'react',
-      autoCodeSplitting: true,
-    }),
     react()
   ],
   resolve: {
@@ -51,6 +46,8 @@ export default defineConfig({
         login: path.resolve(__dirname, 'login.html'),
         call_inbound: path.resolve(__dirname, 'call_inbound.html'),
         call_outbound: path.resolve(__dirname, 'call_outbound.html'),
+        call_bot: path.resolve(__dirname, 'call_bot.html'),
+        chat_bot: path.resolve(__dirname, 'chat_bot.html'),
 
         // 추가 윈도우들 (필요시)
         queue_monitor: path.resolve(__dirname, 'queue_monitor.html'),

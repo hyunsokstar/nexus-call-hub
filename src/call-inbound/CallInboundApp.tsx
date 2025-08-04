@@ -1,15 +1,7 @@
 // C:\pilot-tauri\nexus-call-hub\src\call-inbound\CallInboundApp.tsx
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import CommonHeader from '../widgets/CommonHeader';
 import { useTauriUser } from '../shared/hooks/useAuth';
-
-interface User {
-    id: string;
-    name: string;
-    department: string;
-    role: string;
-    token: string;
-}
 
 interface InboundCall {
     id: string;

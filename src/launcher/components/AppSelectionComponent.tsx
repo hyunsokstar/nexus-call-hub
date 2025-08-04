@@ -23,12 +23,28 @@ const consultantApps = [
         color: 'green'
     },
     {
+        id: 'callbot',
+        label: 'AI 콜봇',
+        icon: '🤖',
+        description: 'AI 자동 상담 시스템',
+        windowType: 'CallBot',
+        color: 'purple'
+    },
+    {
+        id: 'chatbot',
+        label: '챗봇 테스트',
+        icon: '💬',
+        description: '챗봇 기능 테스트',
+        windowType: 'ChatBot',
+        color: 'indigo'
+    },
+    {
         id: 'queue-monitor',
         label: '실시간 대기열',
         icon: '⏳',
         description: '현재 대기 상황 모니터링',
         windowType: 'QueueMonitor',
-        color: 'purple'
+        color: 'orange'
     }
 ]
 
@@ -79,6 +95,7 @@ function AppCard({ app }: AppCardProps) {
         blue: 'hover:bg-blue-50 hover:border-blue-200 bg-blue-100 text-blue-600 group-hover:bg-blue-200',
         green: 'hover:bg-green-50 hover:border-green-200 bg-green-100 text-green-600 group-hover:bg-green-200',
         purple: 'hover:bg-purple-50 hover:border-purple-200 bg-purple-100 text-purple-600 group-hover:bg-purple-200',
+        indigo: 'hover:bg-indigo-50 hover:border-indigo-200 bg-indigo-100 text-indigo-600 group-hover:bg-indigo-200',
         orange: 'hover:bg-orange-50 hover:border-orange-200 bg-orange-100 text-orange-600 group-hover:bg-orange-200',
         gray: 'hover:bg-gray-50 hover:border-gray-300 bg-gray-100 text-gray-600 group-hover:bg-gray-200'
     }
@@ -108,7 +125,7 @@ interface AppSelectionComponentProps {
     onLogout: () => void
 }
 
-function AppSelectionComponent({ user, onLogout }: AppSelectionComponentProps) {
+function AppSelectionComponent({ user }: AppSelectionComponentProps) {
     // 역할별 접근 권한 확인
     const getAvailableApps = () => {
         const isManager = user.role.includes('관리') || user.role === '매니저' || user.role === 'manager'
@@ -151,7 +168,7 @@ function AppSelectionComponent({ user, onLogout }: AppSelectionComponentProps) {
                             <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
                             상담 업무
                         </h3>
-                        <div className="grid grid-cols-3 gap-4">
+                        <div className="grid grid-cols-2 gap-4">
                             {consultant.map(app => (
                                 <AppCard key={app.id} app={app} />
                             ))}

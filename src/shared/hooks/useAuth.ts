@@ -1,7 +1,7 @@
 // C:\pilot-tauri\nexus-call-hub\src\launcher\hooks\useAuth.ts
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { loginApi, getCurrentUserApi, validateTokenApi } from '../api/auth'
-import { LoginRequest, User } from '../api/types'
+import { User } from '../api/types'
 import { invoke } from '@tauri-apps/api/core'
 
 // 로그인 뮤테이션

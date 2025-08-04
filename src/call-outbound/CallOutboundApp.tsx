@@ -39,7 +39,7 @@ function CallOutboundApp() {
     const [currentCampaign, setCurrentCampaign] = useState<Campaign | null>(null)
     const [currentLead, setCurrentLead] = useState<Lead | null>(null)
     const [callDuration, setCallDuration] = useState(0)
-    const [campaigns, setCampaigns] = useState<Campaign[]>([])
+    const [_, setCampaigns] = useState<Campaign[]>([])
     const [leads, setLeads] = useState<Lead[]>([])
     const [callNotes, setCallNotes] = useState('')
 
