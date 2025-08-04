@@ -99,16 +99,17 @@ const ChatBotApp: React.FC = () => {
     }
 
     return (
-        <div className="min-h-screen bg-background flex flex-col">
+        <div className="h-screen bg-white flex flex-col py-6">
             <CommonHeader
                 title="챗봇 테스트"
                 subtitle="AI 챗봇과 대화해보세요"
             />
-            <main className="flex-1 flex items-center justify-center">
-                <div className="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-6 h-full">
+            <div className="my-2" />
+            <main className="flex-1 flex items-center justify-center min-h-0">
+                <div className="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-6 h-full min-h-0">
                     {/* 채팅 영역 */}
-                    <section className="lg:col-span-4 flex flex-col rounded-xl border bg-card shadow-sm h-full min-h-[500px]">
-                        <header className="flex items-center justify-between px-6 py-3 border-b bg-muted rounded-t-xl">
+                    <section className="lg:col-span-4 flex flex-col rounded-2xl border bg-card shadow-sm h-full min-h-0 flex-1">
+                        <header className="flex items-center justify-between px-6 py-4 border-b bg-muted rounded-t-2xl">
                             <h2 className="text-lg font-semibold text-muted-foreground flex items-center gap-2">
                                 <span className="inline-block"><MessageCircle size={20} className="text-primary" /></span>
                                 채팅
@@ -123,9 +124,9 @@ const ChatBotApp: React.FC = () => {
                                 초기화
                             </Button>
                         </header>
-                        <div className="flex-1 flex flex-col overflow-hidden">
+                        <div className="flex-1 flex flex-col overflow-hidden min-h-0">
                             {/* 메시지 목록 */}
-                            <div className="flex-1 overflow-y-auto px-6 py-4 space-y-3">
+                            <div className="flex-1 overflow-y-auto px-6 py-6 space-y-4 min-h-0 mb-4">
                                 {messages.map((message) => (
                                     <div
                                         key={message.id}
@@ -153,7 +154,7 @@ const ChatBotApp: React.FC = () => {
                             </div>
                             {/* 입력 영역 - 항상 하단 고정 */}
                             <form
-                                className="border-t bg-background px-4 py-3 flex gap-2"
+                                className="border-t bg-white px-4 py-4 flex gap-2 rounded-b-2xl"
                                 onSubmit={e => { e.preventDefault(); handleSendMessage(); }}
                                 style={{ minHeight: 56 }}
                             >
@@ -179,11 +180,11 @@ const ChatBotApp: React.FC = () => {
                         </div>
                     </section>
                     {/* 테스트 패널 */}
-                    <aside className="lg:col-span-1 flex flex-col rounded-xl border bg-card shadow-sm h-full min-h-[300px]">
-                        <header className="px-6 py-3 border-b bg-muted rounded-t-xl">
+                    <aside className="lg:col-span-1 flex flex-col rounded-2xl border bg-card shadow-sm h-full min-h-0">
+                        <header className="px-6 py-4 border-b bg-muted rounded-t-2xl">
                             <h3 className="text-base font-semibold text-muted-foreground">빠른 테스트</h3>
                         </header>
-                        <div className="flex-1 flex flex-col gap-2 p-4">
+                        <div className="flex-1 flex flex-col gap-3 p-6">
                             <Button
                                 variant="outline"
                                 size="sm"
