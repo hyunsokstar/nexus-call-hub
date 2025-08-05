@@ -1,10 +1,10 @@
 // C:\pilot-tauri\nexus-call-hub\src\launcher\components\AppSelectionComponent.tsx
 import { invoke } from "@tauri-apps/api/core"
 import { Button } from "@/shared/ui/button"
-import { User } from "../../shared/api/types"
+import { useUser } from "@/shared/hooks/useUser"  // 🔐 새로 추가
 import CommonHeader from "@/widgets/CommonHeader"
 
-// 상담사용 앱들
+// 상담사용 앱들 (기존과 동일)
 const consultantApps = [
     {
         id: 'inbound',
@@ -48,7 +48,7 @@ const consultantApps = [
     }
 ]
 
-// 관리/분석용 앱들
+// 관리/분석용 앱들 (기존과 동일)
 const managementApps = [
     {
         id: 'statistics',
@@ -68,6 +68,7 @@ const managementApps = [
     }
 ]
 
+// AppCard 컴포넌트 (기존과 동일)
 interface AppCardProps {
     app: {
         id: string
@@ -120,12 +121,40 @@ function AppCard({ app }: AppCardProps) {
     )
 }
 
+// 🔧 Props interface 수정 - user, onLogout 제거
 interface AppSelectionComponentProps {
-    user: User
-    onLogout: () => void
+    // props 없음 - useUser 훅에서 모든 것을 관리
 }
 
-function AppSelectionComponent({ user }: AppSelectionComponentProps) {
+function AppSelectionComponent() {  // 🔧 props 제거
+    const { user, isLoading } = useUser();  // 🔐 useUser 훅 사용
+
+    // 🔧 로딩 상태 처리
+    if (isLoading) {
+        return (
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                    <p className="text-gray-600">사용자 정보를 불러오는 중...</p>
+                </div>
+            </div>
+        );
+    }
+
+    // 🔧 로그인되지 않은 상태 처리
+    if (!user) {
+        return (
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+                <div className="text-center">
+                    <p className="text-gray-600 mb-4">로그인이 필요합니다.</p>
+                    <Button onClick={() => invoke('replace_all_windows', { windowType: 'Login' })}>
+                        로그인하기
+                    </Button>
+                </div>
+            </div>
+        );
+    }
+
     // 역할별 접근 권한 확인
     const getAvailableApps = () => {
         const isManager = user.role.includes('관리') || user.role === '매니저' || user.role === 'manager'
@@ -142,12 +171,11 @@ function AppSelectionComponent({ user }: AppSelectionComponentProps) {
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col">
-            {/* CommonHeader 적용 */}
+            {/* 🔧 CommonHeader 수정 - user, onLogout prop 제거 */}
             <CommonHeader
                 title="Nexus Call Hub"
                 subtitle="통합 상담 시스템"
                 icon="N"
-                user={user}
                 showBackButton={false}
                 showLogout={true}
             />

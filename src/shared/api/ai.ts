@@ -38,17 +38,10 @@ export async function streamChatKr(
             },
             body: JSON.stringify({ message }),
             onmessage: (event) => {
-                console.log('📦 받은 raw event:', event);
-
                 if (event.data === '[DONE]') {
-                    console.log('✅ 스트리밍 완료 신호 받음');
-                    isCompleted = true;
-                    onComplete();
-                } else if (event.data) {
-                    // 빈 문자열이 아닐 때만 onChunk 호출
-                    if (event.data.length > 0) {
-                        onChunk(event.data);
-                    }
+                    // ...
+                } else if (event.data !== undefined) { // length 체크 제거
+                    onChunk(event.data); // 빈 문자열도 전달
                 }
             },
             onclose: () => {

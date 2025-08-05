@@ -32,9 +32,11 @@ export interface UserInfo {
 
 // Tauri State용 사용자 타입
 export interface User {
-    id: string
-    name: string
-    department: string
-    role: string
-    token: string
+    id: string;
+    name: string;
+    email?: string;           // 선택적
+    department: string;
+    role: string;
+    token: string;
+    permissions?: string[];   // 선택적
 }

@@ -80,7 +80,7 @@ const GPTCodeHighlighter: React.FC<Props> = ({ content, theme = 'light' }) => {
             // fall back to 기존 처리
         }
 
-        // 백틱 기반 fallback 처리
+        // 🔧 백틱 기반 fallback 처리 개선
         const parts = content.split(/(```[\s\S]*?```)/g)
         return parts.map((part, index) => {
             if (part.startsWith('```') && part.endsWith('```')) {
@@ -126,12 +126,18 @@ const GPTCodeHighlighter: React.FC<Props> = ({ content, theme = 'light' }) => {
                     </div>
                 )
             }
+
+            // 🔧 빈 문자열도 유지하되, 완전히 빈 것만 제외
+            if (!part.trim()) {
+                return null; // 완전히 빈 문자열만 제외
+            }
+
             return (
-                <div key={index} className="whitespace-pre-wrap mb-4 leading-relaxed">
-                    {part.trim()}
+                <div key={index} className="whitespace-pre-wrap mb-2 leading-relaxed">
+                    {part}
                 </div>
             )
-        }).filter(el => el.props.children)
+        }).filter(Boolean) // null만 제거, 빈 문자열은 유지
     }
 
     return <div className="gpt-code-highlighter">{renderContent()}</div>

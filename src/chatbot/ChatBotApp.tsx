@@ -184,7 +184,7 @@ const ChatBotApp: React.FC = () => {
     const isLoading = normalChat.isPending || isStreaming
 
     return (
-        <div className="h-screen bg-white flex flex-col py-6">
+        <div className="h-screen bg-white flex flex-col pb-2 mt-0">
             <CommonHeader
                 title="AI 챗봇 테스트"
                 subtitle="실시간 스트리밍과 다양한 AI 기능을 체험해보세요"
