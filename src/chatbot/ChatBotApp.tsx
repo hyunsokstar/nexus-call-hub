@@ -503,6 +503,7 @@ const ChatBotApp: React.FC = () => {
                                         <div
                                             className="max-w-[70%] rounded-lg px-4 py-2 text-sm shadow-sm bg-muted text-muted-foreground border border-border"
                                             data-streaming-message
+                                            style={{ whiteSpace: 'pre-wrap' }} // 공백과 줄바꿈 보존
                                         >
                                             <span>{currentStreamingMessage}</span>
                                             <span className="inline-block ml-1 animate-pulse text-primary">▍</span>

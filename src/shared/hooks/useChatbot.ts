@@ -53,9 +53,16 @@ export function useChatbot() {
                     message,
                     // onChunk: 실시간으로 텍스트 추가
                     (chunk: string) => {
-                        console.log('🔥 onChunk 받은 데이터:', chunk);
+                        console.log('🔥 onChunk 받은 데이터:', JSON.stringify(chunk));
+                        console.log('🔥 chunk 길이:', chunk.length);
+                        console.log('🔥 공백인가?:', chunk === ' ');
+                        console.log('🔥 이전 fullMessage:', JSON.stringify(fullMessage));
+
                         fullMessage += chunk;
-                        console.log('📝 누적 메시지:', fullMessage);
+
+                        console.log('📝 누적 후 메시지:', JSON.stringify(fullMessage));
+                        console.log('📝 누적 메시지 마지막 10자:', JSON.stringify(fullMessage.slice(-10)));
+
                         setCurrentStreamingMessage(fullMessage);
                         console.log('✨ currentStreamingMessage 업데이트 완료');
                     },
