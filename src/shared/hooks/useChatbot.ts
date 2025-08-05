@@ -1,12 +1,14 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import {
-    streamChatKr,
+    streamChatWithCancel,
+    cancelChatStream,
     postChatKr,
     getHello,
     getMovieRecommendation,
     translateText,
     reviewCode,
+    getActiveStreams,
     ChatRequest,
     ChatResponse,
     MovieInfo
@@ -15,6 +17,9 @@ import {
 export function useChatbot() {
     const [isStreaming, setIsStreaming] = useState(false);
     const [currentStreamingMessage, setCurrentStreamingMessage] = useState('');
+
+    // 🔥 현재 스트리밍 ID 관리
+    const currentStreamIdRef = useRef<string | null>(null);
 
     // 💬 일반 채팅 (전체 응답 한 번에)
     const normalChat = useMutation<ChatResponse, Error, ChatRequest>({
@@ -41,46 +46,90 @@ export function useChatbot() {
         mutationFn: reviewCode,
     });
 
-    // 🔥 스트리밍 채팅 (TanStack Query로 관리)
+    // 🔥 취소 가능한 스트리밍 채팅 (TanStack Query로 관리)
     const streamingChatMutation = useMutation<string, Error, string>({
         mutationFn: async (message: string) => {
             return new Promise<string>((resolve, reject) => {
+                // 고유한 스트림 ID 생성
+                const streamId = `stream_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+                currentStreamIdRef.current = streamId;
+
                 let fullMessage = '';
                 setCurrentStreamingMessage('');
                 setIsStreaming(true);
 
-                streamChatKr(
+                console.log('🚀 스트리밍 시작:', streamId);
+
+                streamChatWithCancel(
                     message,
+                    streamId,
                     // onChunk: 실시간으로 텍스트 추가
                     (chunk: string) => {
                         console.log('🔥 onChunk 받은 데이터:', JSON.stringify(chunk));
-                        console.log('🔥 chunk 길이:', chunk.length);
-                        console.log('🔥 공백인가?:', chunk === ' ');
-                        console.log('🔥 이전 fullMessage:', JSON.stringify(fullMessage));
-
                         fullMessage += chunk;
-
-                        console.log('📝 누적 후 메시지:', JSON.stringify(fullMessage));
-                        console.log('📝 누적 메시지 마지막 10자:', JSON.stringify(fullMessage.slice(-10)));
-
                         setCurrentStreamingMessage(fullMessage);
-                        console.log('✨ currentStreamingMessage 업데이트 완료');
                     },
                     // onComplete: 스트리밍 완료
                     () => {
+                        console.log('✅ 스트리밍 완료:', streamId);
                         setIsStreaming(false);
                         setCurrentStreamingMessage('');
+                        currentStreamIdRef.current = null;
                         resolve(fullMessage);
                     },
                     // onError: 에러 처리
                     (error: Error) => {
+                        console.log('❌ 스트리밍 에러:', streamId, error.message);
                         setIsStreaming(false);
                         setCurrentStreamingMessage('');
+                        currentStreamIdRef.current = null;
                         reject(error);
                     }
                 );
             });
         },
+    });
+
+    // 🛑 스트리밍 취소 함수
+    const cancelStreaming = useCallback(async (): Promise<boolean> => {
+        const streamId = currentStreamIdRef.current;
+        if (!streamId) {
+            console.warn('⚠️ 취소할 스트림이 없습니다.');
+            return false;
+        }
+
+        console.log('🛑 스트리밍 취소 시도:', streamId);
+
+        try {
+            const cancelled = await cancelChatStream(streamId);
+
+            if (cancelled) {
+                // 상태 초기화
+                setIsStreaming(false);
+                setCurrentStreamingMessage('');
+                currentStreamIdRef.current = null;
+
+                console.log('✅ 스트리밍 취소 완료:', streamId);
+                return true;
+            } else {
+                console.warn('⚠️ 스트리밍 취소 실패:', streamId);
+                return false;
+            }
+        } catch (error) {
+            console.error('❌ 취소 중 오류:', error);
+
+            // 에러가 발생해도 상태는 초기화
+            setIsStreaming(false);
+            setCurrentStreamingMessage('');
+            currentStreamIdRef.current = null;
+
+            return false;
+        }
+    }, []);
+
+    // 📊 활성 스트림 조회 (디버깅용)
+    const activeStreamQuery = useMutation<string[], Error, void>({
+        mutationFn: getActiveStreams,
     });
 
     // 🔥 스트리밍 채팅 (기존 방식 유지 - 호환성)
@@ -90,23 +139,29 @@ export function useChatbot() {
         onComplete: () => void,
         onError: (error: Error) => void
     ) => {
+        const streamId = `compat_${Date.now()}`;
+        currentStreamIdRef.current = streamId;
         setIsStreaming(true);
 
         try {
-            await streamChatKr(
+            await streamChatWithCancel(
                 message,
+                streamId,
                 onChunk,
                 () => {
                     setIsStreaming(false);
+                    currentStreamIdRef.current = null;
                     onComplete();
                 },
                 (error) => {
                     setIsStreaming(false);
+                    currentStreamIdRef.current = null;
                     onError(error);
                 }
             );
         } catch (error) {
             setIsStreaming(false);
+            currentStreamIdRef.current = null;
             onError(error as Error);
         }
     }, []);
@@ -115,6 +170,7 @@ export function useChatbot() {
         // 상태
         isStreaming,
         currentStreamingMessage,
+        currentStreamId: currentStreamIdRef.current,
 
         // 일반 기능들
         normalChat,
@@ -123,8 +179,12 @@ export function useChatbot() {
         translation,
         codeReview,
 
-        // 스트리밍 기능 (두 가지 방식)
+        // 스트리밍 기능
         streamingChat, // 기존 방식
         streamingChatMutation, // TanStack Query 방식
+
+        // 🔥 취소 기능
+        cancelStreaming,
+        activeStreamQuery,
     };
 }

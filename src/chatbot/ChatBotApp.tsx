@@ -2,9 +2,18 @@ import React, { useState, useRef, useEffect } from 'react'
 import { useChatbot } from '../shared/hooks/useChatbot'
 import CommonHeader from '@/widgets/CommonHeader'
 import { Button } from '../shared/components/Button'
-import { Trash2, MessageCircle, Clock, HelpCircle, Zap, Film, Globe, Code } from 'lucide-react'
+import {
+    Trash2,
+    MessageCircle,
+    Clock,
+    HelpCircle,
+    Zap,
+    Film,
+    Globe,
+    Code
+} from 'lucide-react'
 import GPTCodeHighlighter from './ui/GPTCodeHighlighter'
-import MessageInput from './components/MessageInput'  // 🔥 새로 추가
+import MessageInput from './components/MessageInput'
 
 interface Message {
     id: string
@@ -19,18 +28,21 @@ const ChatBotApp: React.FC = () => {
         normalChat,
         streamingChatMutation,
         isStreaming,
-        currentStreamingMessage
+        currentStreamingMessage,
+        currentStreamId,
+        cancelStreaming // 🔥 취소 함수
     } = useChatbot();
 
     const [messages, setMessages] = useState<Message[]>([
         {
             id: '1',
-            text: '안녕하세요! 🤖 AI 챗봇에 오신 것을 환영합니다.\n\n• 💬 일반 채팅\n• ⚡ 실시간 스트리밍\n• 🎬 영화 추천\n• 🌍 번역 기능\n• 👨‍💻 코드 리뷰\n\n무엇을 도와드릴까요?',
+            text: '안녕하세요! 🤖 AI 챗봇에 오신 것을 환영합니다.\n\n• 💬 일반 채팅\n• ⚡ 실시간 스트리밍 (취소 가능)\n• 🎬 영화 추천\n• 🌍 번역 기능\n• 👨‍💻 코드 리뷰\n\n✨ 스트리밍 중에는 입력창의 버튼이 취소 버튼으로 바뀝니다!',
             sender: 'bot',
             timestamp: new Date()
         }
     ])
     const [useStreaming, setUseStreaming] = useState(true)
+    const [isCancelling, setIsCancelling] = useState(false) // 🔥 취소 상태
     const messagesEndRef = useRef<HTMLDivElement>(null)
 
     // 메시지가 추가될 때마다 하단으로 스크롤
@@ -41,6 +53,49 @@ const ChatBotApp: React.FC = () => {
     useEffect(() => {
         scrollToBottom()
     }, [messages, currentStreamingMessage])
+
+    // 🛑 스트리밍 취소 핸들러 (MessageInput에서 호출)
+    const handleCancelStreaming = async () => {
+        if (!isStreaming || isCancelling) return;
+
+        setIsCancelling(true);
+        console.log('🛑 입력창에서 스트리밍 취소 요청');
+
+        try {
+            const cancelled = await cancelStreaming();
+
+            if (cancelled) {
+                // 취소 메시지 추가
+                const cancelMessage: Message = {
+                    id: (Date.now()).toString(),
+                    text: '⚠️ 사용자가 응답을 취소했습니다.',
+                    sender: 'bot',
+                    timestamp: new Date()
+                }
+                setMessages(prev => [...prev, cancelMessage]);
+            } else {
+                // 취소 실패 메시지
+                const failMessage: Message = {
+                    id: (Date.now()).toString(),
+                    text: '❌ 응답 취소에 실패했습니다. 이미 완료되었을 수 있습니다.',
+                    sender: 'bot',
+                    timestamp: new Date()
+                }
+                setMessages(prev => [...prev, failMessage]);
+            }
+        } catch (error) {
+            console.error('취소 중 오류:', error);
+            const errorMessage: Message = {
+                id: (Date.now()).toString(),
+                text: '❌ 취소 중 오류가 발생했습니다.',
+                sender: 'bot',
+                timestamp: new Date()
+            }
+            setMessages(prev => [...prev, errorMessage]);
+        } finally {
+            setIsCancelling(false);
+        }
+    };
 
     // 🔥 스트리밍 채팅 처리
     const handleStreamingChat = async (message: string) => {
@@ -64,15 +119,21 @@ const ChatBotApp: React.FC = () => {
             }
             setMessages(prev => [...prev, botMessage])
 
-        } catch (error) {
+        } catch (error: any) {
             console.error('Streaming error:', error)
-            const errorMessage: Message = {
-                id: (Date.now() + 1).toString(),
-                text: '스트리밍 중 오류가 발생했습니다. 다시 시도해주세요.',
-                sender: 'bot',
-                timestamp: new Date()
+
+            // 사용자가 취소한 경우와 일반 오류 구분
+            const isUserCancelled = error.message?.includes('취소');
+
+            if (!isUserCancelled) {
+                const errorMessage: Message = {
+                    id: (Date.now() + 1).toString(),
+                    text: '스트리밍 중 오류가 발생했습니다. 다시 시도해주세요.',
+                    sender: 'bot',
+                    timestamp: new Date()
+                }
+                setMessages(prev => [...prev, errorMessage])
             }
-            setMessages(prev => [...prev, errorMessage])
         }
     }
 
@@ -113,7 +174,7 @@ const ChatBotApp: React.FC = () => {
         )
     }
 
-    // 🔥 메시지 전송 메인 함수 (MessageInput에서 호출)
+    // 🔥 메시지 전송 메인 함수
     const handleSendMessage = async (message: string) => {
         if (useStreaming) {
             await handleStreamingChat(message)
@@ -126,7 +187,7 @@ const ChatBotApp: React.FC = () => {
         setMessages([
             {
                 id: '1',
-                text: '안녕하세요! 🤖 AI 챗봇에 오신 것을 환영합니다.\n\n• 💬 일반 채팅\n• ⚡ 실시간 스트리밍\n• 🎬 영화 추천\n• 🌍 번역 기능\n• 👨‍💻 코드 리뷰\n\n무엇을 도와드릴까요?',
+                text: '안녕하세요! 🤖 AI 챗봇에 오신 것을 환영합니다.\n\n• 💬 일반 채팅\n• ⚡ 실시간 스트리밍 (취소 가능)\n• 🎬 영화 추천\n• 🌍 번역 기능\n• 👨‍💻 코드 리뷰\n\n✨ 스트리밍 중에는 입력창의 버튼이 취소 버튼으로 바뀝니다!',
                 sender: 'bot',
                 timestamp: new Date()
             }
@@ -141,13 +202,13 @@ const ChatBotApp: React.FC = () => {
         },
         {
             icon: <Clock size={16} />,
-            label: '시간 묻기',
-            message: '현재 시간을 JavaScript로 가져오는 방법을 알려주세요'
+            label: '긴 응답 테스트',
+            message: 'Spring Boot로 완전한 REST API 서버를 만드는 방법을 코드와 함께 자세히 설명해주세요. 데이터베이스 연동, 보안, 테스트까지 포함해서요.'
         },
         {
             icon: <HelpCircle size={16} />,
             label: '도움 요청',
-            message: 'Spring Boot에서 REST API를 만드는 방법을 코드와 함께 설명해주세요'
+            message: 'React와 TypeScript를 사용해서 실시간 채팅앱을 만드는 방법을 단계별로 설명해주세요'
         },
         {
             icon: <Film size={16} />,
@@ -161,8 +222,8 @@ const ChatBotApp: React.FC = () => {
         },
         {
             icon: <Code size={16} />,
-            label: '코드 리뷰',
-            message: 'JavaScript 함수를 하나 만들어주세요: 두 숫자를 더하는 함수'
+            label: '코드 설명',
+            message: 'JavaScript의 비동기 처리에 대해서 Promise, async/await, 콜백 함수를 예제와 함께 자세히 설명해주세요'
         }
     ]
 
@@ -187,12 +248,22 @@ const ChatBotApp: React.FC = () => {
                                     {useStreaming ? <Zap size={20} className="text-primary" /> : <MessageCircle size={20} className="text-primary" />}
                                 </span>
                                 {useStreaming ? '스트리밍 채팅' : '일반 채팅'}
+                                {/* 🔥 스트리밍 상태 표시 */}
+                                {isStreaming && (
+                                    <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full animate-pulse">
+                                        실시간 응답 중...
+                                    </span>
+                                )}
                             </h2>
+
                             <div className="flex items-center gap-2">
+                                {/* 🔥 취소 버튼 제거됨 - 이제 입력창에서 처리 */}
+
                                 <Button
                                     variant="outline"
                                     size="sm"
                                     onClick={() => setUseStreaming(!useStreaming)}
+                                    disabled={isStreaming} // 🔥 스트리밍 중엔 모드 변경 불가
                                     icon={<Zap size={16} />}
                                     className={useStreaming ?
                                         "border-primary text-primary bg-primary/5 hover:bg-primary/10 transition-colors duration-200" :
@@ -205,6 +276,7 @@ const ChatBotApp: React.FC = () => {
                                     variant="outline"
                                     size="sm"
                                     onClick={clearChat}
+                                    disabled={isStreaming} // 🔥 스트리밍 중엔 초기화 불가
                                     icon={<Trash2 size={16} />}
                                     className="border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 hover:text-red-700 transition-colors duration-200"
                                 >
@@ -248,6 +320,12 @@ const ChatBotApp: React.FC = () => {
                                         <div className="max-w-[70%] rounded-lg px-4 py-2 text-sm shadow-sm bg-muted text-muted-foreground border border-border">
                                             <GPTCodeHighlighter content={currentStreamingMessage} theme="light" />
                                             <span className="inline-block ml-1 animate-pulse text-primary">▍</span>
+                                            {/* 🔥 현재 스트림 ID 표시 (디버깅용) */}
+                                            {currentStreamId && (
+                                                <div className="text-xs opacity-50 mt-1">
+                                                    Stream: {currentStreamId.slice(-8)}
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 )}
@@ -262,11 +340,20 @@ const ChatBotApp: React.FC = () => {
                                 <div ref={messagesEndRef} />
                             </div>
 
-                            {/* 🔥 분리된 입력 컴포넌트 */}
+                            {/* 🔥 스마트 입력 컴포넌트 */}
                             <MessageInput
                                 onSendMessage={handleSendMessage}
+                                onCancelStreaming={handleCancelStreaming} // 🔥 취소 함수 전달
                                 disabled={isLoading}
-                                placeholder={useStreaming ? "실시간 스트리밍으로 메시지를 입력하세요... (Shift+Enter: 줄바꿈)" : "메시지를 입력하세요... (Shift+Enter: 줄바꿈)"}
+                                isStreaming={isStreaming} // 🔥 스트리밍 상태 전달
+                                isCancelling={isCancelling} // 🔥 취소 진행 상태 전달
+                                placeholder={
+                                    isStreaming
+                                        ? "응답 생성 중입니다... Enter나 Esc로 취소할 수 있어요"
+                                        : useStreaming
+                                            ? "실시간 스트리밍으로 메시지를 입력하세요... (Shift+Enter: 줄바꿈)"
+                                            : "메시지를 입력하세요... (Shift+Enter: 줄바꿈)"
+                                }
                                 useStreaming={useStreaming}
                             />
                         </div>
@@ -284,7 +371,6 @@ const ChatBotApp: React.FC = () => {
                                     variant="outline"
                                     size="sm"
                                     onClick={() => {
-                                        // 빠른 테스트 메시지 바로 전송
                                         handleSendMessage(test.message);
                                     }}
                                     icon={test.icon}
@@ -310,6 +396,30 @@ const ChatBotApp: React.FC = () => {
                                         </>
                                     )}
                                 </div>
+
+                                {/* 🔥 스트리밍 상태 정보 */}
+                                {isStreaming && (
+                                    <div className="mt-2 text-xs">
+                                        <div className="flex items-center gap-2 text-green-600">
+                                            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                                            <span>실시간 응답 중</span>
+                                        </div>
+                                        {currentStreamId && (
+                                            <div className="text-gray-400 mt-1">
+                                                ID: {currentStreamId.slice(-8)}
+                                            </div>
+                                        )}
+
+                                        {/* 🔥 취소 방법 안내 */}
+                                        <div className="mt-2 p-2 bg-orange-50 rounded-lg border border-orange-200">
+                                            <div className="text-orange-700 font-medium">취소 방법:</div>
+                                            <div className="text-orange-600">
+                                                • 입력창의 정지 버튼 클릭<br />
+                                                • <kbd className="px-1 py-0.5 bg-orange-200 rounded text-xs">Enter</kbd> 또는 <kbd className="px-1 py-0.5 bg-orange-200 rounded text-xs">Esc</kbd> 키
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </aside>
