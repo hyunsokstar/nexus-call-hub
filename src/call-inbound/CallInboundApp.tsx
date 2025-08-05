@@ -1,7 +1,6 @@
 // C:\pilot-tauri\nexus-call-hub\src\call-inbound\CallInboundApp.tsx
 import { useState, useEffect } from 'react';
 import CommonHeader from '../widgets/CommonHeader';
-import { useTauriUser } from '../shared/hooks/useAuth';
 
 interface InboundCall {
     id: string;
@@ -15,7 +14,6 @@ interface InboundCall {
 type AgentStatus = 'available' | 'busy' | 'break' | 'offline';
 
 const CallInboundApp = () => {
-    const { data: user } = useTauriUser();
     const [agentStatus, setAgentStatus] = useState<AgentStatus>('offline');
     const [currentCall, setCurrentCall] = useState<InboundCall | null>(null);
     const [callDuration, setCallDuration] = useState(0);
@@ -159,7 +157,6 @@ const CallInboundApp = () => {
                 title="인바운드 상담"
                 subtitle="고객 문의 자동 분배"
                 icon="📞"
-                user={user}
                 showBackButton={true}
                 customActions={
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>

@@ -121,11 +121,6 @@ function AppCard({ app }: AppCardProps) {
     )
 }
 
-// 🔧 Props interface 수정 - user, onLogout 제거
-interface AppSelectionComponentProps {
-    // props 없음 - useUser 훅에서 모든 것을 관리
-}
-
 function AppSelectionComponent() {  // 🔧 props 제거
     const { user, isLoading } = useUser();  // 🔐 useUser 훅 사용
 

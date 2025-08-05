@@ -1,54 +1,24 @@
 // C:\pilot-tauri\nexus-call-hub\src\launcher\LauncherApp.tsx
-import { invoke } from "@tauri-apps/api/core"
-import { useState, useEffect } from "react"
+import { useUser } from "@/shared/hooks/useUser"
 import LoginComponent from "../widgets/LoginForm/LoginComponent"
 import AppSelectionComponent from "./components/AppSelectionComponent"
 import { User } from "../shared/api/types"
 
 function LauncherApp() {
-    const [user, setUser] = useState<User | null>(null)
-    const [isLoggedIn, setIsLoggedIn] = useState(false)
+    const { user, isLoading } = useUser();
 
-    useEffect(() => {
-        // 기존 로그인 상태 확인
-        const checkLoginStatus = async () => {
-            try {
-                const userData = await invoke('get_user')
-                if (userData) {
-                    setUser(userData as User)
-                    setIsLoggedIn(true)
-                }
-            } catch (error) {
-                console.log("기존 로그인 정보 없음")
-            }
-        }
-
-        checkLoginStatus()
-    }, [])
-
-    // 로그인 성공 핸들러
-    const handleLoginSuccess = (userData: User) => {
-        setUser(userData)
-        setIsLoggedIn(true)
-    }
-
-    // 로그아웃 처리
-    const handleLogout = async () => {
+    // 🔧 로그인 성공 핸들러 (LoginComponent용)
+    const handleLoginSuccess = async (userData: User) => {
         try {
-            await invoke('logout_user')
-            setUser(null)
-            setIsLoggedIn(false)
+            // useUser 훅이 자동으로 감지해서 업데이트됨
+            console.log('✅ 로그인 성공:', userData.name);
         } catch (error) {
-            console.error("로그아웃 실패:", error)
+            console.error('❌ 로그인 후 처리 실패:', error);
         }
-    }
+    };
 
-    // 분기 처리
-    if (!isLoggedIn) {
-        return <LoginComponent onLoginSuccess={handleLoginSuccess} />
-    }
-
-    if (!user) {
+    // 🔧 로딩 상태
+    if (isLoading) {
         return (
             <div className="min-h-screen bg-gray-50 flex items-center justify-center">
                 <div className="text-center">
@@ -56,10 +26,16 @@ function LauncherApp() {
                     <p className="text-gray-600">사용자 정보를 불러오는 중...</p>
                 </div>
             </div>
-        )
+        );
     }
 
-    return <AppSelectionComponent user={user} onLogout={handleLogout} />
+    // 🔧 로그인되지 않은 상태
+    if (!user) {
+        return <LoginComponent onLoginSuccess={handleLoginSuccess} />
+    }
+
+    // 🔧 로그인된 상태 - props 제거
+    return <AppSelectionComponent />
 }
 
 export default LauncherApp

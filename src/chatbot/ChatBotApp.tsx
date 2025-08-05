@@ -354,7 +354,6 @@ const ChatBotApp: React.FC = () => {
                                             ? "실시간 스트리밍으로 메시지를 입력하세요... (Shift+Enter: 줄바꿈)"
                                             : "메시지를 입력하세요... (Shift+Enter: 줄바꿈)"
                                 }
-                                useStreaming={useStreaming}
                             />
                         </div>
                     </section>

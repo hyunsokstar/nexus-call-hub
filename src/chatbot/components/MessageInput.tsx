@@ -1,13 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '../../shared/components/Button';
-import { Send, StopCircle, X, Loader2 } from 'lucide-react';
+import { Send, StopCircle, Loader2 } from 'lucide-react';
 
 interface MessageInputProps {
     onSendMessage: (message: string) => void;
     onCancelStreaming?: () => void;
     disabled?: boolean;
     placeholder?: string;
-    useStreaming?: boolean;
     isStreaming?: boolean;
     isCancelling?: boolean;
 }
@@ -17,7 +16,6 @@ const MessageInput: React.FC<MessageInputProps> = ({
     onCancelStreaming,
     disabled = false,
     placeholder = "메시지를 입력하세요...",
-    useStreaming = false,
     isStreaming = false,
     isCancelling = false
 }) => {

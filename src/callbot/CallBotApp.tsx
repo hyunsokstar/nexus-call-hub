@@ -148,7 +148,6 @@ function CallBotApp() {
                 title="AI 콜봇"
                 subtitle="자동 상담 시스템"
                 icon="🤖"
-                user={user}
                 showBackButton={true}
                 showLogout={false}
             />
@@ -169,10 +168,10 @@ function CallBotApp() {
                                         <Badge
                                             variant="secondary"
                                             className={`ml-3 ${botStatus === 'running'
-                                                    ? 'bg-green-100 text-green-800 border-green-200'
-                                                    : botStatus === 'paused'
-                                                        ? 'bg-yellow-100 text-yellow-800 border-yellow-200'
-                                                        : 'bg-gray-100 text-gray-800 border-gray-200'
+                                                ? 'bg-green-100 text-green-800 border-green-200'
+                                                : botStatus === 'paused'
+                                                    ? 'bg-yellow-100 text-yellow-800 border-yellow-200'
+                                                    : 'bg-gray-100 text-gray-800 border-gray-200'
                                                 }`}
                                         >
                                             {botStatus === 'running' ? '🟢 실행중' : botStatus === 'paused' ? '🟡 일시정지' : '🔴 정지'}
