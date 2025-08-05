@@ -9,6 +9,8 @@ export interface ChatRequest {
 
 export interface ChatResponse {
     response: string;
+    formattedResponse?: string;  // 추가
+    htmlResponse?: string;       // 추가
 }
 
 // 💬 일반 채팅 (전체 응답 한 번에)
@@ -37,33 +39,15 @@ export async function streamChatKr(
             body: JSON.stringify({ message }),
             onmessage: (event) => {
                 console.log('📦 받은 raw event:', event);
-                console.log('📦 event.data 원본:', JSON.stringify(event.data));
-                console.log('📦 event.data 길이:', event.data?.length);
-                console.log('📦 공백 문자 확인:', event.data?.charCodeAt?.(0)); // 첫 글자 코드
 
                 if (event.data === '[DONE]') {
                     console.log('✅ 스트리밍 완료 신호 받음');
                     isCompleted = true;
                     onComplete();
                 } else if (event.data) {
-                    let cleanData = event.data;
-
-                    // 1. "data: " 접두사 제거
-                    if (typeof cleanData === 'string' && cleanData.startsWith('data: ')) {
-                        cleanData = cleanData.substring(6);
-                    }
-
-                    // 2. 🔥 줄바꿈 문자들 제거 (핵심 수정!)
-                    cleanData = cleanData.replace(/\n/g, '').replace(/\r/g, '');
-
-                    console.log('✨ 정리된 데이터:', JSON.stringify(cleanData));
-                    console.log('✨ 정리된 데이터 길이:', cleanData.length);
-                    console.log('✨ 공백인가?:', cleanData === ' ');
-                    console.log('✨ 문자 코드:', cleanData.charCodeAt?.(0));
-
-                    // 3. 빈 문자열이 아닐 때만 onChunk 호출
-                    if (cleanData.length > 0) {
-                        onChunk(cleanData);
+                    // 빈 문자열이 아닐 때만 onChunk 호출
+                    if (event.data.length > 0) {
+                        onChunk(event.data);
                     }
                 }
             },

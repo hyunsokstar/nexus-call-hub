@@ -349,7 +349,7 @@ const ChatBotApp: React.FC = () => {
                 onSuccess: (data) => {
                     const botMessage: Message = {
                         id: (Date.now() + 1).toString(),
-                        text: data.response,
+                        text: data.response,  // 원본 텍스트 저장
                         sender: 'bot',
                         timestamp: new Date()
                     }
@@ -457,19 +457,23 @@ const ChatBotApp: React.FC = () => {
                             </h2>
                             <div className="flex items-center gap-2">
                                 <Button
-                                    variant={useStreaming ? "default" : "ghost"}
+                                    variant="outline"
                                     size="sm"
                                     onClick={() => setUseStreaming(!useStreaming)}
                                     icon={<Zap size={16} />}
+                                    className={useStreaming ?
+                                        "border-primary text-primary bg-primary/5 hover:bg-primary/10 transition-colors duration-200" :
+                                        "border-gray-300 text-gray-600 hover:bg-gray-50 hover:border-gray-400 transition-colors duration-200"
+                                    }
                                 >
                                     스트리밍
                                 </Button>
                                 <Button
-                                    variant="ghost"
+                                    variant="outline"
                                     size="sm"
                                     onClick={clearChat}
                                     icon={<Trash2 size={16} />}
-                                    className="text-destructive"
+                                    className="border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 hover:text-red-700 transition-colors duration-200"
                                 >
                                     초기화
                                 </Button>
@@ -485,9 +489,10 @@ const ChatBotApp: React.FC = () => {
                                     >
                                         <div
                                             className={`max-w-[70%] rounded-lg px-4 py-2 text-sm shadow-sm ${message.sender === 'user'
-                                                ? 'bg-primary text-primary-foreground'
-                                                : 'bg-muted text-muted-foreground border border-border'
+                                                    ? 'bg-primary text-primary-foreground'
+                                                    : 'bg-muted text-muted-foreground border border-border'
                                                 }`}
+                                            style={{ whiteSpace: 'pre-wrap' }}  // 👈 이 줄 추가
                                         >
                                             <span>{message.text}</span>
                                             <span className="block text-xs opacity-60 mt-1 text-right">
@@ -503,7 +508,7 @@ const ChatBotApp: React.FC = () => {
                                         <div
                                             className="max-w-[70%] rounded-lg px-4 py-2 text-sm shadow-sm bg-muted text-muted-foreground border border-border"
                                             data-streaming-message
-                                            style={{ whiteSpace: 'pre-wrap' }} // 공백과 줄바꿈 보존
+                                            style={{ whiteSpace: 'pre-wrap' }}  // 👈 이미 적용되어 있음
                                         >
                                             <span>{currentStreamingMessage}</span>
                                             <span className="inline-block ml-1 animate-pulse text-primary">▍</span>
@@ -547,12 +552,12 @@ const ChatBotApp: React.FC = () => {
                                 />
                                 <Button
                                     type="submit"
-                                    disabled={!inputMessage.trim() || isLoading}
-                                    variant="default"
+                                    disabled={isLoading}
+                                    variant="outline"
                                     size="icon"
                                     icon={<Send size={18} />}
                                     loading={isLoading}
-                                    className="h-10 w-10"
+                                    className="h-10 w-10 border-primary text-primary hover:bg-primary hover:text-white disabled:border-gray-300 disabled:text-gray-400 disabled:hover:bg-transparent disabled:hover:text-gray-400 transition-colors duration-200"
                                 />
                             </form>
                         </div>
