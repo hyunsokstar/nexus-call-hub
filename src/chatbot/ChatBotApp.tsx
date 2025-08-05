@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { useChatbot } from '../shared/hooks/useChatbot'
-import { Input } from '../shared/ui/input'
 import CommonHeader from '@/widgets/CommonHeader'
 import { Button } from '../shared/components/Button'
-import { Send, Trash2, MessageCircle, Clock, HelpCircle, Zap, Film, Globe, Code } from 'lucide-react'
-import GPTCodeHighlighter from './ui/GPTCodeHighlighter'; // MarkdownRenderer → GPTCodeHighlighter로 변경
+import { Trash2, MessageCircle, Clock, HelpCircle, Zap, Film, Globe, Code } from 'lucide-react'
+import GPTCodeHighlighter from './ui/GPTCodeHighlighter'
+import MessageInput from './components/MessageInput'  // 🔥 새로 추가
 
 interface Message {
     id: string
@@ -30,8 +30,7 @@ const ChatBotApp: React.FC = () => {
             timestamp: new Date()
         }
     ])
-    const [inputMessage, setInputMessage] = useState('')
-    const [useStreaming, setUseStreaming] = useState(true) // 스트리밍 모드 토글
+    const [useStreaming, setUseStreaming] = useState(true)
     const messagesEndRef = useRef<HTMLDivElement>(null)
 
     // 메시지가 추가될 때마다 하단으로 스크롤
@@ -43,7 +42,7 @@ const ChatBotApp: React.FC = () => {
         scrollToBottom()
     }, [messages, currentStreamingMessage])
 
-    // 🔥 스트리밍 채팅 처리 (TanStack Query 방식)
+    // 🔥 스트리밍 채팅 처리
     const handleStreamingChat = async (message: string) => {
         const userMessage: Message = {
             id: Date.now().toString(),
@@ -57,7 +56,6 @@ const ChatBotApp: React.FC = () => {
         try {
             const finalResponse = await streamingChatMutation.mutateAsync(message);
 
-            // 스트리밍 완료 후 최종 메시지 추가
             const botMessage: Message = {
                 id: (Date.now() + 1).toString(),
                 text: finalResponse,
@@ -95,7 +93,7 @@ const ChatBotApp: React.FC = () => {
                 onSuccess: (data) => {
                     const botMessage: Message = {
                         id: (Date.now() + 1).toString(),
-                        text: data.response,  // 원본 텍스트 저장
+                        text: data.response,
                         sender: 'bot',
                         timestamp: new Date()
                     }
@@ -115,24 +113,12 @@ const ChatBotApp: React.FC = () => {
         )
     }
 
-    // 메시지 전송 메인 함수
-    const handleSendMessage = async () => {
-        if (!inputMessage.trim()) return
-
-        const messageToSend = inputMessage.trim()
-        setInputMessage('')
-
+    // 🔥 메시지 전송 메인 함수 (MessageInput에서 호출)
+    const handleSendMessage = async (message: string) => {
         if (useStreaming) {
-            await handleStreamingChat(messageToSend)
+            await handleStreamingChat(message)
         } else {
-            handleNormalChat(messageToSend)
-        }
-    }
-
-    const handleKeyPress = (e: React.KeyboardEvent) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault()
-            handleSendMessage()
+            handleNormalChat(message)
         }
     }
 
@@ -147,7 +133,6 @@ const ChatBotApp: React.FC = () => {
         ])
     }
 
-    // 빠른 테스트 메시지들 - 새로운 프롬프트에 맞게 수정
     const quickTests = [
         {
             icon: <MessageCircle size={16} />,
@@ -188,6 +173,8 @@ const ChatBotApp: React.FC = () => {
             <CommonHeader
                 title="AI 챗봇 테스트"
                 subtitle="실시간 스트리밍과 다양한 AI 기능을 체험해보세요"
+                icon="🤖"
+                showBackButton={true}
             />
             <div className="my-2" />
             <main className="flex-1 flex items-center justify-center min-h-0">
@@ -225,9 +212,10 @@ const ChatBotApp: React.FC = () => {
                                 </Button>
                             </div>
                         </header>
+
                         <div className="flex-1 flex flex-col overflow-hidden min-h-0">
                             {/* 메시지 목록 */}
-                            <div className="flex-1 overflow-y-auto px-6 py-6 space-y-4 min-h-0 mb-4">
+                            <div className="flex-1 overflow-y-auto px-6 py-6 space-y-4 min-h-0">
                                 {messages.map((message) => (
                                     <div
                                         key={message.id}
@@ -235,14 +223,13 @@ const ChatBotApp: React.FC = () => {
                                     >
                                         <div
                                             className={`
-                max-w-[70%] rounded-lg px-4 py-2 text-sm shadow-sm
-                ${message.sender === 'user'
+                                                max-w-[70%] rounded-lg px-4 py-2 text-sm shadow-sm
+                                                ${message.sender === 'user'
                                                     ? 'bg-primary text-primary-foreground'
                                                     : 'bg-muted text-muted-foreground border border-border'
                                                 }
-            `}
+                                            `}
                                         >
-                                            {/* 🔥 봇 메시지는 GPTCodeHighlighter로, 사용자 메시지는 일반 텍스트로 */}
                                             {message.sender === 'bot' ? (
                                                 <GPTCodeHighlighter content={message.text} theme="light" />
                                             ) : (
@@ -255,7 +242,7 @@ const ChatBotApp: React.FC = () => {
                                     </div>
                                 ))}
 
-                                {/* 🔥 실시간 스트리밍 메시지 */}
+                                {/* 실시간 스트리밍 메시지 */}
                                 {currentStreamingMessage && (
                                     <div className="flex justify-start">
                                         <div className="max-w-[70%] rounded-lg px-4 py-2 text-sm shadow-sm bg-muted text-muted-foreground border border-border">
@@ -275,31 +262,13 @@ const ChatBotApp: React.FC = () => {
                                 <div ref={messagesEndRef} />
                             </div>
 
-                            {/* 입력 영역 */}
-                            <form
-                                className="border-t bg-white px-4 py-4 flex gap-2 rounded-b-2xl"
-                                onSubmit={e => { e.preventDefault(); handleSendMessage(); }}
-                                style={{ minHeight: 56 }}
-                            >
-                                <Input
-                                    value={inputMessage}
-                                    onChange={e => setInputMessage(e.target.value)}
-                                    onKeyPress={handleKeyPress}
-                                    placeholder={useStreaming ? "실시간 스트리밍으로 메시지를 입력하세요..." : "메시지를 입력하세요..."}
-                                    className="flex-1 h-10 text-sm"
-                                    disabled={isLoading}
-                                    autoFocus
-                                />
-                                <Button
-                                    type="submit"
-                                    disabled={isLoading}
-                                    variant="outline"
-                                    size="icon"
-                                    icon={<Send size={18} />}
-                                    loading={isLoading}
-                                    className="h-10 w-10 border-primary text-primary hover:bg-primary hover:text-white disabled:border-gray-300 disabled:text-gray-400 disabled:hover:bg-transparent disabled:hover:text-gray-400 transition-colors duration-200"
-                                />
-                            </form>
+                            {/* 🔥 분리된 입력 컴포넌트 */}
+                            <MessageInput
+                                onSendMessage={handleSendMessage}
+                                disabled={isLoading}
+                                placeholder={useStreaming ? "실시간 스트리밍으로 메시지를 입력하세요... (Shift+Enter: 줄바꿈)" : "메시지를 입력하세요... (Shift+Enter: 줄바꿈)"}
+                                useStreaming={useStreaming}
+                            />
                         </div>
                     </section>
 
@@ -314,7 +283,10 @@ const ChatBotApp: React.FC = () => {
                                     key={index}
                                     variant="outline"
                                     size="sm"
-                                    onClick={() => setInputMessage(test.message)}
+                                    onClick={() => {
+                                        // 빠른 테스트 메시지 바로 전송
+                                        handleSendMessage(test.message);
+                                    }}
                                     icon={test.icon}
                                     className="w-full justify-start text-left"
                                     disabled={isLoading}

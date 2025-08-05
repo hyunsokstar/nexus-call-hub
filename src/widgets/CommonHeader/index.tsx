@@ -68,7 +68,7 @@ function CommonHeader({
     }
 
     return (
-        <header className="bg-white border-b border-gray-200 px-4 py-2">
+        <header className="bg-[#55BEC8] border-b border-gray-200 px-4 py-2">
             <div className="flex items-center justify-between">
                 {/* 왼쪽 영역 - 타이틀 */}
                 <div className="flex items-center gap-3">
