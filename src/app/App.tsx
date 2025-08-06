@@ -15,7 +15,6 @@ function LauncherApp() {
       console.error('개발자 도구 초기화 실패:', error)
     })
 
-    // 새로운 개발자 도구 헬퍼 초기화
     DevToolsHelper.initKeyboardShortcuts()
     DevToolsHelper.printDebugInfo()
   }, [])
