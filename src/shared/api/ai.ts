@@ -1,7 +1,7 @@
-import axios from 'axios';
+import { apiClient } from './client';
 import { fetchEventSource } from '@microsoft/fetch-event-source';
 
-const API_BASE_URL = 'http://localhost:8080/api/ai';
+const API_BASE_URL = 'http://43.200.234.52:8080/api/ai';
 
 export interface ChatRequest {
     message: string;
@@ -117,7 +117,7 @@ export async function cancelChatStream(streamId: string): Promise<boolean> {
         const clientCancelled = streamManager.cancelStream(streamId);
 
         // 2. 서버 측 스트림 취소
-        const response = await axios.delete(`${API_BASE_URL}/stream/${streamId}`);
+        const response = await apiClient.delete(`/api/ai/stream/${streamId}`);
         const serverCancelled = response.data.cancelled;
 
         console.log('🛑 취소 결과:', {
@@ -137,7 +137,7 @@ export async function cancelChatStream(streamId: string): Promise<boolean> {
 // 📊 활성 스트림 조회 (디버깅용)
 export async function getActiveStreams(): Promise<string[]> {
     try {
-        const response = await axios.get(`${API_BASE_URL}/streams/active`);
+        const response = await apiClient.get(`/api/ai/streams/active`);
         return response.data.activeStreams;
     } catch (error) {
         console.error('❌ 활성 스트림 조회 실패:', error);
@@ -159,13 +159,13 @@ export async function streamChatKr(
 
 // 💬 일반 채팅 (변경 없음)
 export async function postChatKr(data: ChatRequest): Promise<ChatResponse> {
-    const res = await axios.post(`${API_BASE_URL}/chat-kr`, data);
+    const res = await apiClient.post(`/api/ai/chat-kr`, data);
     return res.data;
 }
 
 // 🧪 간단한 테스트 (변경 없음)
 export async function getHello(message?: string): Promise<ChatResponse> {
-    const res = await axios.get(`${API_BASE_URL}/hello`, {
+    const res = await apiClient.get(`/api/ai/hello`, {
         params: { message }
     });
     return res.data;
@@ -178,7 +178,7 @@ export interface MovieInfo {
 }
 
 export async function getMovieRecommendation(actor: string): Promise<MovieInfo> {
-    const res = await axios.get(`${API_BASE_URL}/movie`, {
+    const res = await apiClient.get(`/api/ai/movie`, {
         params: { actor }
     });
     return res.data;
@@ -186,7 +186,7 @@ export async function getMovieRecommendation(actor: string): Promise<MovieInfo> 
 
 // 🌍 번역 기능 (변경 없음)
 export async function translateText(text: string, targetLanguage: string): Promise<ChatResponse> {
-    const res = await axios.post(`${API_BASE_URL}/translate`, null, {
+    const res = await apiClient.post(`/api/ai/translate`, null, {
         params: { text, targetLanguage }
     });
     return res.data;
@@ -194,7 +194,7 @@ export async function translateText(text: string, targetLanguage: string): Promi
 
 // 👨‍💻 코드 리뷰 (변경 없음)
 export async function reviewCode(code: string): Promise<ChatResponse> {
-    const res = await axios.post(`${API_BASE_URL}/review-code`, code, {
+    const res = await apiClient.post(`/api/ai/review-code`, code, {
         headers: {
             'Content-Type': 'text/plain'
         }
