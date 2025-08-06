@@ -1,8 +1,25 @@
 // src/app/LauncherApp.tsx
 import { invoke } from "@tauri-apps/api/core"
 import { Button } from "@/shared/ui/button"
+import { useEffect } from "react"
+import DevToolsManager from "@/shared/lib/devtools"
+import DevToolsHelper from "@/shared/lib/devtools-helper"
+import DevToolsTestPanel from "@/shared/components/DevToolsTestPanel"
 
 function LauncherApp() {
+  // 개발자 도구 초기화
+  useEffect(() => {
+    DevToolsManager.initialize().then(() => {
+      console.log('개발자 도구 초기화 완료 - Launcher App')
+    }).catch(error => {
+      console.error('개발자 도구 초기화 실패:', error)
+    })
+
+    // 새로운 개발자 도구 헬퍼 초기화
+    DevToolsHelper.initKeyboardShortcuts()
+    DevToolsHelper.printDebugInfo()
+  }, [])
+
   // 런처 → 로그인 전환
   const handleLoginClick = async () => {
     try {
@@ -114,6 +131,11 @@ function LauncherApp() {
           </div>
         </div>
       </main>
+
+      {/* 개발자 도구 테스트 패널 */}
+      <div className="px-6 pb-4">
+        <DevToolsTestPanel />
+      </div>
 
       {/* Footer */}
       <footer className="p-4">

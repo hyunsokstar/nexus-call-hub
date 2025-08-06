@@ -1,4 +1,7 @@
+// 주의: 콘솔 로그 보이게 하기 위해 아래 라인은 주석 처리!
+/*
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+*/
 
 mod state;
 mod window;
@@ -9,6 +12,10 @@ fn main() {
     tauri::Builder::default()
         .manage(AuthState::default())
         .invoke_handler(tauri::generate_handler![
+            // 🛠️ 개발자 도구 관리 (Tauri 기본 기능 사용)
+            window::commands::open_devtools,
+            window::commands::close_devtools,
+            window::commands::open_all_devtools,
             // 윈도우 관리
             window::commands::open_window,
             window::commands::close_window,

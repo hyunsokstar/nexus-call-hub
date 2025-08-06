@@ -10,6 +10,7 @@
     "frontendDist": "../dist"
   },
   "app": {
+    "withGlobalTauri": true,
     "windows": [
       {
         "label": "login",
@@ -21,16 +22,17 @@
         "center": true,
         "decorations": true,
         "alwaysOnTop": false,
-        "skipTaskbar": false
+        "skipTaskbar": false,
+        "devtools": true
       }
     ],
     "security": {
       "csp": {
         "default-src": "'self' asset:",
-        "connect-src": "ipc: http://ipc.localhost",
+        "connect-src": "ipc: http://ipc.localhost http://localhost:8080",
         "img-src": "'self' asset: https://asset.localhost blob: data:",
         "style-src": "'unsafe-inline' 'self'",
-        "script-src": "'self' 'wasm-unsafe-eval'"
+        "script-src": "'self' 'wasm-unsafe-eval' 'unsafe-eval'"
       },
       "capabilities": [
         {

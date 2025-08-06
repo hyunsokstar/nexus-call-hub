@@ -1,5 +1,6 @@
 // src-tauri/src/window/mod.rs
 pub mod commands;
+pub mod config;
 pub mod types;
 
 use serde::{Deserialize, Serialize};

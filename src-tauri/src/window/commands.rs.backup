@@ -48,53 +48,70 @@ pub async fn open_window(app_handle: AppHandle, window_type: WindowType) -> Resu
         builder = builder.center();
     }
 
-    let _window = builder.build().map_err(|e| e.to_string())?;
+    let window = builder.build().map_err(|e| e.to_string())?;
+
+    // 윈도우 생성 후 개발자 도구 자동 열기 (선택적)
+    #[cfg(debug_assertions)]
+    {
+        // 개발 모드에서만 자동으로 개발자 도구 열기
+        if config.devtools {
+            window.open_devtools();
+        }
+    }
 
     println!("✅ 윈도우 생성: {} (DevTools: {})", config.label, config.devtools);
     Ok("Window opened successfully".to_string())
 }
 
-/// 개발자 도구 열기 (Tauri v2)
+/// 개발자 도구 열기
 #[tauri::command]
 pub async fn open_devtools(app_handle: AppHandle, label: Option<String>) -> Result<String, String> {
-    println!("🛠️ 개발자 도구 열기 시도...");
-    
-    // 윈도우 찾기
     let window = if let Some(label) = label {
         app_handle.get_webview_window(&label)
     } else {
-        // 현재 포커스된 윈도우 또는 첫 번째 윈도우
+        // 현재 활성 윈도우에서 개발자 도구 열기
         app_handle.webview_windows().values().next().cloned()
     };
 
     if let Some(window) = window {
-        // Tauri v2에서는 with_devtools(true)로 빌드된 윈도우에서만 개발자 도구가 작동
-        println!("🛠️ 윈도우 '{}' - F12를 눌러 개발자 도구를 여세요", window.label());
-        
-        // 윈도우에 메시지 전송 (개발자 도구 열기 안내)
-        // window.emit("devtools-instruction", "F12 키를 눌러 개발자 도구를 열 수 있습니다").map_err(|e| e.to_string())?;
-        
-        Ok(format!("윈도우 '{}'에서 F12를 눌러 개발자 도구를 여세요", window.label()))
+        window.open_devtools();
+        println!("🛠️ 개발자 도구 열기: {}", window.label());
+        Ok("Developer tools opened".to_string())
     } else {
-        Err("활성 윈도우를 찾을 수 없습니다".to_string())
+        Err("No window found".to_string())
     }
 }
 
-/// 개발자 도구 닫기 (Tauri v2)
+/// 개발자 도구 닫기
 #[tauri::command]
-pub async fn close_devtools(_app_handle: AppHandle, _label: Option<String>) -> Result<String, String> {
-    println!("🔧 개발자 도구 닫기 시도...");
-    Ok("개발자 도구를 닫으려면 개발자 도구 창에서 닫기 버튼을 클릭하세요".to_string())
+pub async fn close_devtools(app_handle: AppHandle, label: Option<String>) -> Result<String, String> {
+    let window = if let Some(label) = label {
+        app_handle.get_webview_window(&label)
+    } else {
+        app_handle.webview_windows().values().next().cloned()
+    };
+
+    if let Some(window) = window {
+        window.close_devtools();
+        println!("🔧 개발자 도구 닫기: {}", window.label());
+        Ok("Developer tools closed".to_string())
+    } else {
+        Err("No window found".to_string())
+    }
 }
 
-/// 모든 윈도우의 개발자 도구 정보
+/// 모든 윈도우의 개발자 도구 열기
 #[tauri::command]
 pub async fn open_all_devtools(app_handle: AppHandle) -> Result<String, String> {
     let windows = app_handle.webview_windows();
     let count = windows.len();
     
-    println!("🛠️ 총 {} 개의 윈도우에서 F12로 개발자 도구를 열 수 있습니다", count);
-    Ok(format!("{} 개의 윈도우에서 개발자 도구를 사용할 수 있습니다 (F12)", count))
+    for (_, window) in windows {
+        window.open_devtools();
+    }
+    
+    println!("🛠️ 모든 윈도우 개발자 도구 열기 ({} 개)", count);
+    Ok(format!("Developer tools opened for {} windows", count))
 }
 
 /// 윈도우 닫기
@@ -288,4 +305,55 @@ pub async fn set_always_on_top(
         println!("📌 윈도우 항상 위에 {}: {}", status, label);
     }
     Ok("Window always on top setting updated successfully".to_string())
+}
+
+/// 개발자 도구 열기
+#[tauri::command]
+pub async fn open_devtools(app_handle: AppHandle, label: Option<String>) -> Result<String, String> {
+    let window = if let Some(label) = label {
+        app_handle.get_webview_window(&label)
+    } else {
+        // 현재 활성 윈도우에서 개발자 도구 열기
+        app_handle.webview_windows().values().next().cloned()
+    };
+
+    if let Some(window) = window {
+        window.open_devtools();
+        println!("🛠️ 개발자 도구 열기: {}", window.label());
+        Ok("Developer tools opened".to_string())
+    } else {
+        Err("No window found".to_string())
+    }
+}
+
+/// 개발자 도구 닫기
+#[tauri::command]
+pub async fn close_devtools(app_handle: AppHandle, label: Option<String>) -> Result<String, String> {
+    let window = if let Some(label) = label {
+        app_handle.get_webview_window(&label)
+    } else {
+        app_handle.webview_windows().values().next().cloned()
+    };
+
+    if let Some(window) = window {
+        window.close_devtools();
+        println!("🔧 개발자 도구 닫기: {}", window.label());
+        Ok("Developer tools closed".to_string())
+    } else {
+        Err("No window found".to_string())
+    }
+}
+
+/// 모든 윈도우의 개발자 도구 열기
+#[tauri::command]
+pub async fn open_all_devtools(app_handle: AppHandle) -> Result<String, String> {
+    let windows = app_handle.webview_windows();
+    let count = windows.len();
+    
+    for (_, window) in windows {
+        window.open_devtools();
+    }
+    
+    println!("🛠️ 모든 윈도우 개발자 도구 열기 ({} 개)", count);
+    Ok(format!("Developer tools opened for {} windows", count))
 }

@@ -18,6 +18,7 @@ pub struct WindowConfig {
     pub decorations: bool,
     pub transparent: bool,
     pub shadow: bool,
+    pub devtools: bool,
 }
 
 impl Default for WindowConfig {
@@ -38,6 +39,7 @@ impl Default for WindowConfig {
             decorations: true,
             transparent: false,
             shadow: true,
+            devtools: true, // 기본적으로 개발자 도구 활성화
         }
     }
 }
@@ -53,6 +55,9 @@ impl WindowConfigManager {
             WindowType::Login => Self::login_config(),
             WindowType::CallOutbound => Self::call_outbound_config(),
             WindowType::CallInbound => Self::call_inbound_config(),
+            WindowType::CallBot => Self::call_bot_config(),
+            WindowType::ChatBot => Self::chat_bot_config(),
+            WindowType::QueueMonitor => Self::queue_monitor_config(),
             WindowType::Statistics => Self::statistics_config(),
             WindowType::Settings => Self::settings_config(),
         }
@@ -75,8 +80,8 @@ impl WindowConfigManager {
     fn launcher_config() -> WindowConfig {
         WindowConfig {
             label: WindowType::Launcher.as_str().to_string(),
-            title: WindowType::Launcher.default_title().to_string(),
-            url: Self::get_url(WindowType::Launcher.default_route()),
+            title: WindowType::Launcher.title().to_string(),
+            url: WindowType::Launcher.url(),
             width: 400.0,
             height: 600.0,
             min_width: Some(380.0),
@@ -89,6 +94,7 @@ impl WindowConfigManager {
             decorations: true,
             transparent: false,
             shadow: true,
+            devtools: true,
         }
     }
 
@@ -96,8 +102,8 @@ impl WindowConfigManager {
     fn login_config() -> WindowConfig {
         WindowConfig {
             label: WindowType::Login.as_str().to_string(),
-            title: WindowType::Login.default_title().to_string(),
-            url: Self::get_url(WindowType::Login.default_route()),
+            title: WindowType::Login.title().to_string(),
+            url: WindowType::Login.url(),
             width: 450.0,
             height: 500.0,
             min_width: Some(400.0),
@@ -110,6 +116,7 @@ impl WindowConfigManager {
             decorations: true,
             transparent: false,
             shadow: true,
+            devtools: true,
         }
     }
 
@@ -117,8 +124,8 @@ impl WindowConfigManager {
     fn call_outbound_config() -> WindowConfig {
         WindowConfig {
             label: WindowType::CallOutbound.as_str().to_string(),
-            title: WindowType::CallOutbound.default_title().to_string(),
-            url: Self::get_url(WindowType::CallOutbound.default_route()),
+            title: WindowType::CallOutbound.title().to_string(),
+            url: WindowType::CallOutbound.url(),
             width: 350.0,
             height: 500.0,
             min_width: Some(320.0),
@@ -131,6 +138,7 @@ impl WindowConfigManager {
             decorations: true,
             transparent: false,
             shadow: true,
+            devtools: true,
         }
     }
 
@@ -138,8 +146,8 @@ impl WindowConfigManager {
     fn call_inbound_config() -> WindowConfig {
         WindowConfig {
             label: WindowType::CallInbound.as_str().to_string(),
-            title: WindowType::CallInbound.default_title().to_string(),
-            url: Self::get_url(WindowType::CallInbound.default_route()),
+            title: WindowType::CallInbound.title().to_string(),
+            url: WindowType::CallInbound.url(),
             width: 350.0,
             height: 400.0,
             min_width: Some(320.0),
@@ -152,6 +160,7 @@ impl WindowConfigManager {
             decorations: true,
             transparent: false,
             shadow: true,
+            devtools: true,
         }
     }
 
@@ -159,8 +168,8 @@ impl WindowConfigManager {
     fn statistics_config() -> WindowConfig {
         WindowConfig {
             label: WindowType::Statistics.as_str().to_string(),
-            title: WindowType::Statistics.default_title().to_string(),
-            url: Self::get_url(WindowType::Statistics.default_route()),
+            title: WindowType::Statistics.title().to_string(),
+            url: WindowType::Statistics.url(),
             width: 1000.0,
             height: 700.0,
             min_width: Some(800.0),
@@ -173,6 +182,7 @@ impl WindowConfigManager {
             decorations: true,
             transparent: false,
             shadow: true,
+            devtools: true,
         }
     }
 
@@ -180,8 +190,8 @@ impl WindowConfigManager {
     fn settings_config() -> WindowConfig {
         WindowConfig {
             label: WindowType::Settings.as_str().to_string(),
-            title: WindowType::Settings.default_title().to_string(),
-            url: Self::get_url(WindowType::Settings.default_route()),
+            title: WindowType::Settings.title().to_string(),
+            url: WindowType::Settings.url(),
             width: 600.0,
             height: 500.0,
             min_width: Some(500.0),
@@ -194,6 +204,73 @@ impl WindowConfigManager {
             decorations: true,
             transparent: false,
             shadow: true,
+            devtools: true,
+        }
+    }
+
+    /// 콜봇 윈도우 설정
+    fn call_bot_config() -> WindowConfig {
+        WindowConfig {
+            label: WindowType::CallBot.as_str().to_string(),
+            title: WindowType::CallBot.title().to_string(),
+            url: WindowType::CallBot.url(),
+            width: 1100.0,
+            height: 800.0,
+            min_width: Some(900.0),
+            min_height: Some(600.0),
+            max_width: None,
+            max_height: None,
+            resizable: true,
+            center: true,
+            always_on_top: false,
+            decorations: true,
+            transparent: false,
+            shadow: true,
+            devtools: true,
+        }
+    }
+
+    /// 챗봇 윈도우 설정
+    fn chat_bot_config() -> WindowConfig {
+        WindowConfig {
+            label: WindowType::ChatBot.as_str().to_string(),
+            title: WindowType::ChatBot.title().to_string(),
+            url: WindowType::ChatBot.url(),
+            width: 1200.0,
+            height: 900.0,
+            min_width: Some(1000.0),
+            min_height: Some(700.0),
+            max_width: None,
+            max_height: None,
+            resizable: true,
+            center: true,
+            always_on_top: false,
+            decorations: true,
+            transparent: false,
+            shadow: true,
+            devtools: true,
+        }
+    }
+
+    /// 큐 모니터 윈도우 설정
+    fn queue_monitor_config() -> WindowConfig {
+        WindowConfig {
+            label: WindowType::QueueMonitor.as_str().to_string(),
+            title: WindowType::QueueMonitor.title().to_string(),
+            url: WindowType::QueueMonitor.url(),
+            width: 1000.0,
+            height: 700.0,
+            min_width: Some(800.0),
+            min_height: Some(500.0),
+            max_width: None,
+            max_height: None,
+            resizable: true,
+            center: true,
+            always_on_top: false,
+            decorations: true,
+            transparent: false,
+            shadow: true,
+            devtools: true,
         }
     }
 }
