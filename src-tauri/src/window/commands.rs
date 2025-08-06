@@ -54,9 +54,9 @@ pub async fn open_window(app_handle: AppHandle, window_type: WindowType) -> Resu
     Ok("Window opened successfully".to_string())
 }
 
-/// 개발자 도구 열기 (Tauri v2)
+/// 개발자 도구 열기 안내 (Tauri v2)
 #[tauri::command]
-pub async fn open_devtools(app_handle: AppHandle, label: Option<String>) -> Result<String, String> {
+pub async fn window_open_devtools(app_handle: AppHandle, label: Option<String>) -> Result<String, String> {
     println!("🛠️ 개발자 도구 열기 시도...");
     
     // 윈도우 찾기
@@ -80,16 +80,16 @@ pub async fn open_devtools(app_handle: AppHandle, label: Option<String>) -> Resu
     }
 }
 
-/// 개발자 도구 닫기 (Tauri v2)
+/// 개발자 도구 닫기 안내 (Tauri v2)
 #[tauri::command]
-pub async fn close_devtools(_app_handle: AppHandle, _label: Option<String>) -> Result<String, String> {
+pub async fn window_close_devtools(_app_handle: AppHandle, _label: Option<String>) -> Result<String, String> {
     println!("🔧 개발자 도구 닫기 시도...");
     Ok("개발자 도구를 닫으려면 개발자 도구 창에서 닫기 버튼을 클릭하세요".to_string())
 }
 
 /// 모든 윈도우의 개발자 도구 정보
 #[tauri::command]
-pub async fn open_all_devtools(app_handle: AppHandle) -> Result<String, String> {
+pub async fn window_open_all_devtools(app_handle: AppHandle) -> Result<String, String> {
     let windows = app_handle.webview_windows();
     let count = windows.len();
     

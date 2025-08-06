@@ -6,9 +6,9 @@ import DevToolsHelper from '@/shared/lib/devtools-helper';
 const DevToolsTestPanel: React.FC = () => {
     const handleOpenDevTools = async () => {
         try {
-            const result = await invoke('open_devtools');
-            console.log('개발자 도구 결과:', result);
-            alert(result);
+            await invoke('open_current_devtools');
+            console.log('개발자 도구를 열었습니다.');
+            alert('개발자 도구를 열었습니다!');
         } catch (error) {
             console.error('개발자 도구 열기 실패:', error);
             alert('개발자 도구 열기 실패: ' + error);

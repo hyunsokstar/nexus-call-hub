@@ -9,7 +9,7 @@ export class DevToolsManager {
    */
   static async openDevTools(): Promise<void> {
     try {
-      await invoke('open_devtools');
+      await invoke('open_current_devtools');
       console.log('개발자 도구를 열었습니다.');
     } catch (error) {
       console.error('개발자 도구 열기 실패:', error);
@@ -21,7 +21,7 @@ export class DevToolsManager {
    */
   static async closeDevTools(): Promise<void> {
     try {
-      await invoke('close_devtools');
+      await invoke('close_current_devtools');
       console.log('개발자 도구를 닫았습니다.');
     } catch (error) {
       console.error('개발자 도구 닫기 실패:', error);
@@ -59,7 +59,7 @@ export class DevToolsManager {
    */
   static async openDevToolsForWindow(windowLabel: string): Promise<void> {
     try {
-      await invoke('open_devtools_for_window', { label: windowLabel });
+      await invoke('open_devtools');
       console.log(`윈도우 '${windowLabel}'의 개발자 도구를 열었습니다.`);
     } catch (error) {
       console.error(`윈도우 '${windowLabel}' 개발자 도구 열기 실패:`, error);
@@ -71,7 +71,7 @@ export class DevToolsManager {
    */
   static async openDevToolsAll(): Promise<void> {
     try {
-      await invoke('open_devtools_all');
+      await invoke('open_devtools');
       console.log('모든 윈도우의 개발자 도구를 열었습니다.');
     } catch (error) {
       console.error('모든 윈도우 개발자 도구 열기 실패:', error);

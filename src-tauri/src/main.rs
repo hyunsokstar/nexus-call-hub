@@ -5,6 +5,7 @@
 
 mod state;
 mod window;
+mod devtools;
 
 use state::auth_state::AuthState;
 
@@ -12,11 +13,21 @@ fn main() {
     tauri::Builder::default()
         .manage(AuthState::default())
         .invoke_handler(tauri::generate_handler![
-            // 🛠️ 개발자 도구 관리 (Tauri 기본 기능 사용)
-            window::commands::open_devtools,
-            window::commands::close_devtools,
-            window::commands::open_all_devtools,
+            // 🛠️ 개발자 도구 관리 (단순화된 방식)
+            devtools::open_devtools,
+            devtools::close_devtools,
+            devtools::toggle_devtools,
+            devtools::open_current_devtools,
+            devtools::close_current_devtools,
+            devtools::is_devtools_open,
+            devtools::is_dev_mode,
+            devtools::get_devtools_shortcuts,
+            // 윈도우 관리 (devtools 안내)
+            window::commands::window_open_devtools,
+            window::commands::window_close_devtools,
+            window::commands::window_open_all_devtools,
             // 윈도우 관리
+            window::commands::open_window,
             window::commands::open_window,
             window::commands::close_window,
             window::commands::switch_window,
