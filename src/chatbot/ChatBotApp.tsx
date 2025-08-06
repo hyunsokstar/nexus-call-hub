@@ -232,7 +232,7 @@ const ChatBotApp: React.FC = () => {
     return (
         <div className="h-screen bg-white flex flex-col pb-2 mt-0">
             <CommonHeader
-                title="AI 챗봇 테스트"
+                title="AI 챗봇"
                 subtitle="실시간 스트리밍과 다양한 AI 기능을 체험해보세요"
                 icon="🤖"
                 showBackButton={true}
@@ -297,7 +297,7 @@ const ChatBotApp: React.FC = () => {
                                             className={`
                                                 max-w-[70%] rounded-lg px-4 py-2 text-sm shadow-sm
                                                 ${message.sender === 'user'
-                                                    ? 'bg-primary text-primary-foreground'
+                                                    ? 'bg-blue-500 text-white'
                                                     : 'bg-muted text-muted-foreground border border-border'
                                                 }
                                             `}
