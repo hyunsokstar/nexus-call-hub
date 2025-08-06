@@ -1,337 +1,228 @@
-# Nexus Call Hub - Tauri + React + TypeScript
+# Nexus Call Hub - 설치부터 실행까지 완벽 가이드
 
-전화 상담 시스템을 위한 멀티윈도우 데스크톱 애플리케이션
+> 🚀 **Rust/Tauri를 처음 접하는 분들을 위한 A to Z 가이드**
 
-## 📋 **필수 사전 요구사항**
+## 📌 시작하기 전에
 
-### **1. Rust 설치**
-```bash
-# Windows (PowerShell)
-winget install Rustlang.Rustup
+이 가이드는 **Windows 10/11** 기준이며, 개발 경험이 전혀 없어도 따라할 수 있습니다.  
+총 소요시간: 약 30분
 
-# macOS/Linux
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+---
 
-# 설치 확인
-rustc --version
-cargo --version
-```
+## 🔧 Step 1: 필수 프로그램 설치 (순서대로!)
 
-### **2. Node.js 설치**
-```bash
-# Windows (PowerShell)
-winget install OpenJS.NodeJS
+### 1-1. Visual Studio Build Tools 설치 (필수!)
+> Rust 컴파일에 반드시 필요합니다.
 
-# macOS (Homebrew)
-brew install node
+1. [다운로드 링크](https://visualstudio.microsoft.com/ko/visual-cpp-build-tools/) 클릭
+2. **"Build Tools 다운로드"** 버튼 클릭
+3. 다운로드된 파일 실행
+4. 설치 옵션에서 **"C++를 사용한 데스크톱 개발"** 체크
+5. 설치 (약 5-10분 소요)
+6. **PC 재시작** (중요!)
 
-# 설치 확인
+### 1-2. Node.js 설치
+> JavaScript 실행 환경입니다.
+
+1. [Node.js 공식 사이트](https://nodejs.org/ko/) 접속
+2. **LTS 버전** 다운로드 (왼쪽 초록색 버튼)
+3. 다운로드된 파일 실행
+4. 모든 옵션 기본값으로 Next → Next → Install
+5. 설치 완료
+
+**✅ 확인 방법:**
+```powershell
+# PowerShell 열고 입력
 node --version
-npm --version
+# v20.x.x 같은 버전이 나오면 성공
 ```
 
-### **3. 시스템별 추가 의존성**
+### 1-3. Rust 설치
+> Tauri의 핵심 언어입니다.
 
-#### **Windows:**
-```bash
-# Visual Studio Build Tools 설치
-winget install Microsoft.VisualStudio.2022.BuildTools
+1. [Rust 설치 페이지](https://www.rust-lang.org/tools/install) 접속
+2. **"64-BIT 다운로드"** 클릭 (rustup-init.exe)
+3. 다운로드된 파일 실행
+4. 검은 창이 열리면 **Enter** 키 누르기 (기본 설치)
+5. 설치 완료 후 **Enter** 한 번 더
+6. **PowerShell 완전히 종료 후 다시 열기** (중요!)
 
-# 또는 Visual Studio Community
-winget install Microsoft.VisualStudio.2022.Community
+**✅ 확인 방법:**
+```powershell
+# 새 PowerShell에서 입력
+rustc --version
+# rustc 1.x.x 같은 버전이 나오면 성공
 ```
 
-#### **macOS:**
-```bash
-# Xcode Command Line Tools
-xcode-select --install
-```
+### 1-4. Git 설치 (선택사항)
+> 프로젝트를 다운로드할 때 필요합니다.
 
-#### **Linux (Ubuntu/Debian):**
-```bash
-sudo apt update
-sudo apt install libwebkit2gtk-4.0-dev \
-    build-essential \
-    curl \
-    wget \
-    file \
-    libssl-dev \
-    libgtk-3-dev \
-    libayatana-appindicator3-dev \
-    librsvg2-dev
-```
+1. [Git 다운로드](https://git-scm.com/download/win) 페이지 접속
+2. **64-bit Git for Windows Setup** 클릭
+3. 다운로드된 파일 실행
+4. 모든 옵션 기본값으로 Next → Next → Install
+5. 설치 완료
 
 ---
 
-## 🚀 **프로젝트 설정 및 실행**
+## 📦 Step 2: 프로젝트 다운로드 및 설정
 
-### **1. 프로젝트 클론 및 의존성 설치**
-```bash
-# 프로젝트 클론
-git clone <repository-url>
+### 2-1. 프로젝트 다운로드
+
+**방법 A: Git 사용 (권장)**
+```powershell
+# PowerShell에서 실행
+cd C:\
+git clone https://github.com/hyunsokstar/nexus-call-hub.git
 cd nexus-call-hub
+```
 
-# Node.js 의존성 설치
+**방법 B: ZIP 다운로드**
+1. [GitHub 저장소](https://github.com/hyunsokstar/nexus-call-hub) 접속
+2. 초록색 **Code** 버튼 클릭
+3. **Download ZIP** 클릭
+4. C:\ 드라이브에 압축 해제
+5. 폴더명을 `nexus-call-hub`로 변경
+
+### 2-2. 프로젝트 폴더로 이동
+```powershell
+# PowerShell에서 실행
+cd C:\nexus-call-hub
+```
+
+### 2-3. 필요한 패키지 설치
+```powershell
+# PowerShell에서 실행 (약 3-5분 소요)
 npm install
-
-# Rust 의존성은 자동으로 처리됨
 ```
 
-### **2. 개발 서버 실행**
-```bash
-# 개발 모드 실행 (권장)
-npm run tauri dev
-
-# 또는 Cargo 직접 사용
-cargo tauri dev
-```
-
-### **3. 프로덕션 빌드**
-```bash
-# 실행 파일 빌드
-npm run tauri build
-
-# 또는 Cargo 직접 사용
-cargo tauri build
+⚠️ **에러가 나는 경우:**
+```powershell
+# 캐시 정리 후 재시도
+npm cache clean --force
+npm install
 ```
 
 ---
 
-## 📁 **프로젝트 구조**
+## 🎮 Step 3: 프로그램 실행
 
+### 3-1. 개발 모드로 실행
+```powershell
+# PowerShell에서 실행
+npm run tauri dev
+```
+
+**첫 실행시:**
+- Rust 패키지 다운로드로 5-10분 소요됩니다
+- "Windows 보안 경고" 창이 뜨면 **"액세스 허용"** 클릭
+- 자동으로 앱 창이 열립니다!
+
+### 3-2. 실행 파일 만들기 (배포용)
+```powershell
+# PowerShell에서 실행 (약 10-15분 소요)
+npm run tauri build
+```
+
+**완성된 실행 파일 위치:**
+```
+C:\nexus-call-hub\src-tauri\target\release\nexus-call-hub.exe
+```
+
+---
+
+## 🚨 자주 발생하는 문제와 해결법
+
+### 문제 1: "cargo가 없다"는 에러
+```powershell
+# 해결방법: PowerShell 재시작 후
+rustup default stable
+```
+
+### 문제 2: "cannot find cc.exe" 에러
+```powershell
+# 해결방법: Visual Studio Build Tools 재설치
+# 설치시 "C++를 사용한 데스크톱 개발" 체크 확인!
+```
+
+### 문제 3: npm install 실패
+```powershell
+# 해결방법: 관리자 권한으로 PowerShell 실행
+# 시작 메뉴 → PowerShell 우클릭 → "관리자 권한으로 실행"
+npm cache clean --force
+npm install --force
+```
+
+### 문제 4: 빌드는 되는데 실행이 안 됨
+```powershell
+# 해결방법: Windows Defender 예외 추가
+# Windows 보안 → 바이러스 및 위협 방지 → 제외 추가
+# C:\nexus-call-hub 폴더 추가
+```
+
+### 문제 5: 포트 충돌 (1420 포트 사용 중)
+```powershell
+# 해결방법: 다른 Tauri 앱 종료 또는
+npm run tauri dev -- --port 3000
+```
+
+---
+
+## 📝 개발 명령어 정리
+
+| 명령어 | 설명 | 사용 시기 |
+|--------|------|-----------|
+| `npm run tauri dev` | 개발 모드 실행 | 개발/테스트할 때 |
+| `npm run tauri build` | 실행 파일 생성 | 배포할 때 |
+| `npm install` | 패키지 설치 | 처음 또는 package.json 변경시 |
+| `npm run dev` | 웹 버전만 실행 | 프론트엔드만 테스트할 때 |
+
+---
+
+## 🎯 빠른 시작 체크리스트
+
+- [ ] Visual Studio Build Tools 설치 완료
+- [ ] Node.js 설치 완료 (`node --version` 확인)
+- [ ] Rust 설치 완료 (`rustc --version` 확인)
+- [ ] 프로젝트 다운로드 완료
+- [ ] `npm install` 완료
+- [ ] `npm run tauri dev`로 앱 실행 성공
+
+모든 체크박스를 완료했다면 개발 준비 완료! 🎉
+
+---
+
+## 💡 추가 팁
+
+### VS Code 설치 (권장)
+코드 편집을 위해 [Visual Studio Code](https://code.visualstudio.com/) 설치를 권장합니다.
+
+### 폴더 구조 이해
 ```
 nexus-call-hub/
-├── src/                          # React 프론트엔드
-│   ├── App.tsx                   # 메인 React 컴포넌트
-│   ├── main.tsx                  # React 엔트리 포인트
-│   └── styles.css                # 스타일시트
-├── src-tauri/                    # Rust 백엔드
-│   ├── src/
-│   │   ├── main.rs              # Tauri 메인 파일
-│   │   └── window.rs            # 윈도우 관리 모듈
-│   ├── Cargo.toml               # Rust 의존성
-│   ├── tauri.conf.json          # Tauri 설정
-│   └── build.rs                 # 빌드 스크립트
-├── public/                       # 정적 파일들
-├── package.json                  # Node.js 설정
-├── vite.config.ts               # Vite 빌드 설정
-└── tsconfig.json                # TypeScript 설정
+├── src/              # 화면(React) 코드
+├── src-tauri/        # 백엔드(Rust) 코드
+└── package.json      # 프로젝트 설정
 ```
+
+### 코드 수정하기
+- `src/` 폴더의 파일 수정 → 화면 변경
+- `src-tauri/` 폴더의 파일 수정 → 기능 변경
+- 개발 모드에서는 수정사항이 자동 반영됩니다
 
 ---
 
-## 🛠️ **주요 개발 명령어**
+## 🆘 도움이 필요하신가요?
 
-### **개발 관련:**
-```bash
-# 개발 서버 시작 (핫 리로드)
-npm run tauri dev
-
-# 프론트엔드만 개발 서버
-npm run dev
-
-# TypeScript 타입 체크
-npm run type-check
-
-# 린트 검사
-npm run lint
-```
-
-### **빌드 관련:**
-```bash
-# 개발용 빌드
-npm run build
-
-# 프로덕션 실행 파일 생성
-npm run tauri build
-
-# 아이콘 생성 (512x512 PNG 파일로부터)
-npm run tauri icon app-icon.png
-```
-
-### **Rust 관련:**
-```bash
-# Rust 의존성 업데이트
-cargo update
-
-# Rust 코드만 컴파일 체크
-cargo check
-
-# Rust 테스트 실행
-cargo test
-
-# Rust 포맷팅
-cargo fmt
-
-# Rust 린트
-cargo clippy
-```
+1. 에러 메시지를 **정확히** 복사해서 검색
+2. [Tauri Discord](https://discord.com/invite/tauri) 커뮤니티
+3. [GitHub Issues](https://github.com/hyunsokstar/nexus-call-hub/issues)에 문의
 
 ---
 
-## 🖥️ **멀티윈도우 시스템**
+## 🎊 축하합니다!
 
-### **현재 구현된 윈도우:**
-- **Launcher**: 메인 허브 윈도우 (400x500)
-- **Login**: 상담사 로그인 (350x300) - 준비중
-- **Call**: 전화 걸기 제어 (320x550) - 준비중
-
-### **윈도우 추가 방법:**
-1. `src-tauri/src/window.rs`에서 `WindowType` enum에 새 타입 추가
-2. `WindowConfigs::get()` 메서드에 새 윈도우 설정 추가
-3. 필요시 새 HTML/React 컴포넌트 생성
-
----
-
-## 🔧 **개발 환경 설정**
-
-### **권장 VS Code 확장:**
-```json
-{
-  "recommendations": [
-    "tauri-apps.tauri-vscode",
-    "rust-lang.rust-analyzer", 
-    "esbenp.prettier-vscode",
-    "bradlc.vscode-tailwindcss"
-  ]
-}
-```
-
-### **VS Code 설정 (.vscode/settings.json):**
-```json
-{
-  "rust-analyzer.linkedProjects": ["./src-tauri/Cargo.toml"],
-  "typescript.preferences.importModuleSpecifier": "relative"
-}
-```
-
----
-
-## 🐛 **트러블슈팅**
-
-### **일반적인 문제들:**
-
-#### **1. "command not found: cargo"**
-```bash
-# PATH에 Cargo 추가 (Windows)
-$env:PATH += ";$env:USERPROFILE\.cargo\bin"
-
-# 또는 새 터미널 세션 시작
-# 또는 시스템 재부팅
-```
-
-#### **2. 컴파일 에러: "linking with cc failed"**
-```bash
-# Windows: Visual Studio Build Tools 설치 필요
-# Linux: build-essential 패키지 설치 필요
-# macOS: Xcode Command Line Tools 설치 필요
-```
-
-#### **3. "WebviewWindowBuilder not found"**
-```bash
-# Tauri 버전 확인
-cargo --version
-npm list @tauri-apps/cli
-
-# 버전 2.x 이상인지 확인
-# 필요시 업데이트
-cargo install tauri-cli
-npm install @tauri-apps/cli@latest
-```
-
-#### **4. 윈도우가 열리지 않음**
-```bash
-# 로그 확인
-npm run tauri dev -- --verbose
-
-# 캐시 정리
-rm -rf target/
-rm -rf dist/
-npm run tauri dev
-```
-
-#### **5. 핫 리로드가 작동하지 않음**
-```bash
-# 포트 충돌 확인
-netstat -ano | findstr :1420
-
-# 다른 포트 사용
-npm run dev -- --port 3000
-```
-
----
-
-## 📚 **추가 자료**
-
-### **프로젝트 참고 자료:**
-- **[Tauri 스타터 가이드](https://nexus-task-master.shop/pilot-project/tauri-starter)** - 프로젝트 초기 설정 및 구조
-- **[Rust 기본 문법 - 1페이지](https://nexus-task-master.shop/note-admin/notes/95/note-contents?pageNum=1)** - Rust 기초 문법
-- **[Rust 기본 문법 - 2페이지](https://nexus-task-master.shop/note-admin/notes/95/note-contents?pageNum=2)** - Rust 고급 문법
-
-### **공식 문서:**
-- [Tauri 가이드](https://v2.tauri.app/start/)
-- [Tauri API 레퍼런스](https://v2.tauri.app/reference/)
-- [React 문서](https://react.dev/)
-- [TypeScript 문서](https://www.typescriptlang.org/)
-- [Rust 공식 문서](https://doc.rust-lang.org/)
-
-### **학습 순서 (추천):**
-1. **[Rust 기본 문법](https://nexus-task-master.shop/note-admin/notes/95/note-contents?pageNum=1)** 먼저 학습
-2. **[Tauri 스타터 가이드](https://nexus-task-master.shop/pilot-project/tauri-starter)** 따라하기
-3. **현재 프로젝트** 실습하기
-4. **[고급 Rust 문법](https://nexus-task-master.shop/note-admin/notes/95/note-contents?pageNum=2)** 적용하기
-
-### **유용한 명령어:**
-```bash
-# Tauri 프로젝트 정보 확인
-npm run tauri info
-
-# 사용 가능한 Tauri 명령어 보기
-npm run tauri --help
-
-# 플랫폼별 빌드 타겟 확인
-npm run tauri build --help
-```
-
----
-
-## 🔐 **보안 고려사항**
-
-### **CSP (Content Security Policy):**
-`src-tauri/tauri.conf.json`에서 보안 정책 설정
-
-### **API 권한:**
-필요한 Tauri API만 활성화하여 보안 강화
-
-### **자동 업데이트:**
-프로덕션 환경에서는 Tauri 자동 업데이트 기능 고려
-
----
-
-## 📖 **라이선스**
-
-MIT License - 자세한 내용은 LICENSE 파일 참조
-
----
-
-## 🤝 **기여하기**
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
----
-
-## 📞 **지원**
-
-문제가 발생하면 다음을 확인해보세요:
-
-1. **시스템 요구사항** 모두 설치되었는지 확인
-2. **최신 버전** 사용 중인지 확인
-3. **에러 로그** 자세히 읽어보기
-4. **공식 문서** 참조
-5. **Issues** 탭에서 유사한 문제 검색
+여기까지 따라오셨다면 Tauri 앱 개발 환경 구축을 완료하신 것입니다!  
+이제 코드를 수정하고 자신만의 앱을 만들어보세요.
 
 **Happy Coding!** 🚀
