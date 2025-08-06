@@ -212,6 +212,34 @@ nexus-call-hub/
 
 ---
 
+## 🚀 GitHub Actions 자동 빌드 (선택사항)
+
+### 자동 릴리스 설정
+GitHub에서 태그를 푸시하면 자동으로 실행 파일이 빌드되어 릴리스됩니다.
+
+```powershell
+# 1. GitHub Actions 워크플로우 파일 커밋
+git add .github/workflows/release.yml
+git commit -m "ci: add release workflow"
+git push origin main
+
+# 2. 릴리스 태그 생성 및 푸시
+git tag v1.0.0
+git push origin v1.0.0  # 이때 Actions가 자동 실행됨!
+```
+
+### 빌드 결과 확인
+1. [GitHub 저장소](https://github.com/hyunsokstar/nexus-call-hub) 접속
+2. **Actions** 탭에서 빌드 상태 확인
+3. **Releases** 탭에서 자동 생성된 실행 파일 다운로드
+
+### 자동 빌드 지원 플랫폼
+- ✅ Windows (MSI, EXE)
+- ✅ macOS (DMG, APP)
+- ✅ Linux (AppImage, DEB)
+
+---
+
 ## 🆘 도움이 필요하신가요?
 
 1. 에러 메시지를 **정확히** 복사해서 검색
