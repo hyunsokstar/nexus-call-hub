@@ -1,9 +1,28 @@
 // C:\pilot-tauri\nexus-call-hub\src\launcher\api\client.ts
 import axios from 'axios'
 
+// 환경별 API 서버 설정
+const getApiBaseUrl = () => {
+    // 개발 환경 체크 (Vite 개발 서버)
+    if (import.meta.env.DEV) {
+        console.log('🔧 개발 환경 - 로컬 Spring Boot 서버 사용');
+        return 'http://localhost:8080';
+    }
+
+    // Tauri 앱 환경 체크
+    if (typeof window !== 'undefined' && (window as any).__TAURI__) {
+        console.log('📱 Tauri 앱 환경 - EC2 서버 사용');
+        return 'http://43.200.234.52:8080';
+    }
+
+    // 기본값 (브라우저에서 빌드된 것)
+    console.log('🌐 브라우저 환경 - EC2 서버 사용');
+    return 'http://43.200.234.52:8080';
+};
+
 // API 베이스 설정
 export const apiClient = axios.create({
-    baseURL: 'http://43.200.234.52:8080',
+    baseURL: getApiBaseUrl(),
     headers: {
         'Content-Type': 'application/json; charset=utf-8',
         'Accept': 'application/json; charset=utf-8',

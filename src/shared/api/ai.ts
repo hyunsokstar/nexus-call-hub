@@ -1,7 +1,10 @@
 import { apiClient } from './client';
 import { fetchEventSource } from '@microsoft/fetch-event-source';
 
-const API_BASE_URL = 'http://43.200.234.52:8080/api/ai';
+// 환경별 API URL을 동적으로 생성하는 함수
+const getApiBaseUrl = () => {
+    return `${apiClient.defaults.baseURL}/api/ai`;
+};
 
 export interface ChatRequest {
     message: string;
@@ -61,7 +64,7 @@ export async function streamChatWithCancel(
         const controller = streamManager.createStream(streamId);
         let isCompleted = false;
 
-        await fetchEventSource(`${API_BASE_URL}/stream/${streamId}`, {
+        await fetchEventSource(`${getApiBaseUrl()}/stream/${streamId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
