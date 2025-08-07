@@ -1,11 +1,17 @@
 // C:\pilot-tauri\nexus-call-hub\src\launcher\api\auth.ts
 
 import { apiClient } from "./client"
-import { ApiResponse, LoginRequest, LoginResponseData, UserInfo } from "./types"
+import { ApiResponse, LoginRequest, LoginResponseData, UserInfo, SignupRequest, SignupResponseData } from "./types"
 
 // 로그인 API
 export const loginApi = async (credentials: LoginRequest): Promise<ApiResponse<LoginResponseData>> => {
     const response = await apiClient.post<ApiResponse<LoginResponseData>>('/auth/login', credentials)
+    return response.data
+}
+
+// 회원가입 API
+export const signupApi = async (userData: SignupRequest): Promise<ApiResponse<SignupResponseData>> => {
+    const response = await apiClient.post<ApiResponse<SignupResponseData>>('/auth/signup', userData)
     return response.data
 }
 

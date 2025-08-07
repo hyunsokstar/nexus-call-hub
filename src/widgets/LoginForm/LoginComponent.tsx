@@ -6,9 +6,10 @@ import { User } from "../../shared/api/types"
 
 interface LoginComponentProps {
     onLoginSuccess: (user: User) => void
+    onSwitchToSignup?: () => void // 선택적 prop
 }
 
-function LoginComponent({ onLoginSuccess }: LoginComponentProps) {
+function LoginComponent({ onLoginSuccess, onSwitchToSignup }: LoginComponentProps) {
     const [credentials, setCredentials] = useState({
         username: "terecal",
         password: "1234"
@@ -259,6 +260,31 @@ function LoginComponent({ onLoginSuccess }: LoginComponentProps) {
                             </button>
                         </div>
                     </div>
+
+                    {/* 회원가입 링크 */}
+                    {onSwitchToSignup && (
+                        <div style={{ textAlign: 'center', marginTop: '16px' }}>
+                            <p style={{ fontSize: '14px', color: '#6b7280' }}>
+                                계정이 없으신가요?{' '}
+                                <button
+                                    type="button"
+                                    onClick={onSwitchToSignup}
+                                    disabled={loginMutation.isPending}
+                                    style={{
+                                        background: 'none',
+                                        border: 'none',
+                                        color: '#2563eb',
+                                        fontSize: '14px',
+                                        fontWeight: '500',
+                                        cursor: loginMutation.isPending ? 'not-allowed' : 'pointer',
+                                        textDecoration: 'underline'
+                                    }}
+                                >
+                                    회원가입
+                                </button>
+                            </p>
+                        </div>
+                    )}
                 </div>
 
                 {/* 상태 표시 */}

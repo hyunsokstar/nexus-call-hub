@@ -1,9 +1,15 @@
 // C:\pilot-tauri\nexus-call-hub\src\login\LoginApp.tsx (디버깅 강화)
 import { invoke } from "@tauri-apps/api/core"
 import { User } from "@/shared/api/types"
+import { useState } from "react"
 import LoginComponent from "@/widgets/LoginForm/LoginComponent"
+import SignupComponent from "@/widgets/SignupForm/SignupComponent"
+
+type ViewMode = 'login' | 'signup'
 
 function LoginApp() {
+    const [viewMode, setViewMode] = useState<ViewMode>('login')
+
     const handleLoginSuccess = async (user: User) => {
         console.log('🎯 LoginApp: 로그인 성공 콜백 호출됨', user)
 
@@ -52,11 +58,33 @@ function LoginApp() {
         }
     }
 
+    // 회원가입 성공 후 로그인 페이지로 이동
+    const handleSignupSuccess = () => {
+        setViewMode('login')
+    }
+
+    // 로그인/회원가입 전환
+    const switchToSignup = () => {
+        setViewMode('signup')
+    }
+
+    const switchToLogin = () => {
+        setViewMode('login')
+    }
+
     return (
         <>
-
-            {/* 기존 LoginComponent 재사용 */}
-            <LoginComponent onLoginSuccess={handleLoginSuccess} />
+            {viewMode === 'login' ? (
+                <LoginComponent 
+                    onLoginSuccess={handleLoginSuccess}
+                    onSwitchToSignup={switchToSignup}
+                />
+            ) : (
+                <SignupComponent 
+                    onSignupSuccess={handleSignupSuccess}
+                    onSwitchToLogin={switchToLogin}
+                />
+            )}
         </>
     )
 }

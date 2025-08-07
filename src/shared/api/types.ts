@@ -21,6 +21,17 @@ export interface LoginResponseData {
     tokenType: string
 }
 
+// 회원가입 요청 타입 (백엔드 SignupRequest에 맞춤)
+export interface SignupRequest {
+    username: string
+    password: string
+}
+
+// 회원가입 응답 데이터 타입
+export interface SignupResponseData {
+    message: string
+}
+
 // 사용자 정보 타입
 export interface UserInfo {
     id: number
