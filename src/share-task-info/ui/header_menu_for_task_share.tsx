@@ -1,5 +1,4 @@
 import { Link, useRouterState } from '@tanstack/react-router';
-import React from 'react';
 
 const tabs = [
     { label: '업무 템플릿', to: '/boilerplate' },
