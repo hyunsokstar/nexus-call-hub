@@ -53,6 +53,7 @@ export default defineConfig({
         queue_monitor: path.resolve(__dirname, 'queue_monitor.html'),
         statistics: path.resolve(__dirname, 'statistics.html'),
         settings: path.resolve(__dirname, 'settings.html'),
+        share_task_info: path.resolve(__dirname, 'share_task_info.html'),
       }
     }
   },

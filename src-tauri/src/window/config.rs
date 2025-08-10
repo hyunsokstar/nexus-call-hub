@@ -60,6 +60,7 @@ impl WindowConfigManager {
             WindowType::QueueMonitor => Self::queue_monitor_config(),
             WindowType::Statistics => Self::statistics_config(),
             WindowType::Settings => Self::settings_config(),
+            WindowType::ShareTaskInfo => Self::share_task_info_config(),
         }
     }
 
@@ -251,7 +252,6 @@ impl WindowConfigManager {
             devtools: true,
         }
     }
-
     /// 큐 모니터 윈도우 설정
     fn queue_monitor_config() -> WindowConfig {
         WindowConfig {
@@ -262,6 +262,28 @@ impl WindowConfigManager {
             height: 700.0,
             min_width: Some(800.0),
             min_height: Some(500.0),
+            max_width: None,
+            max_height: None,
+            resizable: true,
+            center: true,
+            always_on_top: false,
+            decorations: true,
+            transparent: false,
+            shadow: true,
+            devtools: true,
+        }
+    }
+
+    /// 공유 작업 정보 윈도우 설정
+    fn share_task_info_config() -> WindowConfig {
+        WindowConfig {
+            label: WindowType::ShareTaskInfo.as_str().to_string(),
+            title: WindowType::ShareTaskInfo.title().to_string(),
+            url: WindowType::ShareTaskInfo.url(),
+            width: 1920.0,
+            height: 1080.0,
+            min_width: Some(1280.0),
+            min_height: Some(800.0),
             max_width: None,
             max_height: None,
             resizable: true,

@@ -12,7 +12,7 @@ const consultantApps = [
         icon: '📞',
         description: '고객 문의 자동 분배',
         windowType: 'CallInbound',
-        color: 'blue'
+        color: 'blue',
     },
     {
         id: 'outbound',
@@ -20,7 +20,7 @@ const consultantApps = [
         icon: '📱',
         description: '캠페인 통화 실행',
         windowType: 'CallOutbound',
-        color: 'green'
+        color: 'green',
     },
     {
         id: 'callbot',
@@ -28,7 +28,7 @@ const consultantApps = [
         icon: '🤖',
         description: 'AI 자동 상담 시스템',
         windowType: 'CallBot',
-        color: 'purple'
+        color: 'purple',
     },
     {
         id: 'chatbot',
@@ -36,7 +36,7 @@ const consultantApps = [
         icon: '💬',
         description: '챗봇 기능 테스트',
         windowType: 'ChatBot',
-        color: 'indigo'
+        color: 'indigo',
     },
     {
         id: 'queue-monitor',
@@ -44,11 +44,19 @@ const consultantApps = [
         icon: '⏳',
         description: '현재 대기 상황 모니터링',
         windowType: 'QueueMonitor',
-        color: 'orange'
-    }
-]
+        color: 'orange',
+    },
+    {
+        id: 'share-task-info',
+        label: '공유 업무 정보',
+        icon: '🗂️',
+        description: '업무 정보 공유 및 확인',
+        windowType: 'ShareTaskInfo',
+        color: 'blue',
+    },
+];
 
-// 관리/분석용 앱들 (기존과 동일)
+// 관리/분석용 앱들 (공유 업무 정보 추가)
 const managementApps = [
     {
         id: 'statistics',
@@ -65,6 +73,14 @@ const managementApps = [
         description: '시스템 설정',
         windowType: 'Settings',
         color: 'gray'
+    },
+    {
+        id: 'share-task-info',
+        label: '공유 업무 정보',
+        icon: '🗂️',
+        description: '업무 정보 공유 및 확인',
+        windowType: 'share_task_info', // 동적 생성용 label
+        color: 'blue'
     }
 ]
 

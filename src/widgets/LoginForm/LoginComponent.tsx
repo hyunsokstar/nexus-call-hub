@@ -12,7 +12,7 @@ interface LoginComponentProps {
 function LoginComponent({ onLoginSuccess, onSwitchToSignup }: LoginComponentProps) {
     const [credentials, setCredentials] = useState({
         username: "terecal",
-        password: "1234"
+        password: "123456"
     })
     const [error, setError] = useState("")
 

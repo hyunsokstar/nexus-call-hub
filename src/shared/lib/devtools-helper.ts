@@ -14,13 +14,13 @@ export class DevToolsHelper {
         event.preventDefault();
         await this.tryOpenDevTools();
       }
-      
+
       // Ctrl+Shift+I
       if (event.ctrlKey && event.shiftKey && event.key === 'I') {
         event.preventDefault();
         await this.tryOpenDevTools();
       }
-      
+
       // Ctrl+Shift+J (콘솔)
       if (event.ctrlKey && event.shiftKey && event.key === 'J') {
         event.preventDefault();
@@ -35,24 +35,24 @@ export class DevToolsHelper {
   static async tryOpenDevTools() {
     try {
       console.log('🛠️ 개발자 도구 열기 시도...');
-      
+
       // 1. Tauri 명령어로 시도
       await invoke('open_current_devtools');
-      
+
       // 2. 브라우저 API로 시도 (있다면)
       if (typeof window !== 'undefined' && (window as any).__TAURI__) {
         console.log('Tauri 환경에서 개발자 도구 열기');
       }
-      
+
       // 3. 개발 모드에서는 직접 콘솔 열기
       if (import.meta.env.DEV) {
         console.log('개발 모드: 개발자 도구를 사용할 수 있습니다');
       }
-      
+
       console.log('✅ 개발자 도구 열기 성공');
     } catch (error) {
       console.error('❌ 개발자 도구 열기 실패:', error);
-      
+
       // 대안 방법 시도
       console.log('🔄 대안 방법으로 키보드 단축키를 사용해주세요: F12, Ctrl+Shift+I');
     }
@@ -92,7 +92,7 @@ if (typeof window !== 'undefined') {
     DevToolsHelper.initKeyboardShortcuts();
     DevToolsHelper.printDebugInfo();
   });
-  
+
   // 전역 객체에 추가 (콘솔에서 테스트용)
   (window as any).DevToolsHelper = DevToolsHelper;
 }
