@@ -26,10 +26,23 @@ export const Select: React.FC<SelectProps> = ({
     placeholder
 }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    // 바깥 클릭 감지: 트리거와 콘텐츠를 모두 포함한 컨테이너 기준
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+                setIsOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
 
     return (
         <SelectContext.Provider value={{ value, onValueChange, isOpen, setIsOpen, placeholder }}>
-            <div className="relative w-full">
+            <div ref={containerRef} className="relative w-full" data-select-root>
                 {children}
             </div>
         </SelectContext.Provider>
@@ -43,27 +56,11 @@ interface SelectTriggerProps {
 
 export const SelectTrigger: React.FC<SelectTriggerProps> = ({ children, className }) => {
     const context = useContext(SelectContext);
-    const triggerRef = useRef<HTMLButtonElement>(null);
-
     if (!context) throw new Error('SelectTrigger must be used within Select');
-
     const { isOpen, setIsOpen } = context;
-
-    // 외부 클릭 감지
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (triggerRef.current && !triggerRef.current.contains(event.target as Node)) {
-                setIsOpen(false);
-            }
-        };
-
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, [setIsOpen]);
 
     return (
         <button
-            ref={triggerRef}
             type="button"
             onClick={() => setIsOpen(!isOpen)}
             className={cn(
@@ -99,11 +96,7 @@ export const SelectValue: React.FC<SelectValueProps> = ({ placeholder, className
     const displayPlaceholder = placeholder || contextPlaceholder;
 
     return (
-        <span className={cn(
-            'text-left',
-            !value && 'text-muted-foreground',
-            className
-        )}>
+        <span className={cn('text-left', !value && 'text-muted-foreground', className)}>
             {value || displayPlaceholder}
         </span>
     );
@@ -119,16 +112,17 @@ export const SelectContent: React.FC<SelectContentProps> = ({ children, classNam
     if (!context) throw new Error('SelectContent must be used within Select');
 
     const { isOpen } = context;
-
     if (!isOpen) return null;
 
     return (
-        <div className={cn(
-            'absolute top-full left-0 z-50 w-full mt-1',
-            'min-w-[8rem] overflow-hidden rounded-md border bg-white',
-            'shadow-md animate-in fade-in-0 zoom-in-95',
-            className
-        )}>
+        <div
+            className={cn(
+                'absolute top-full left-0 z-50 w-full mt-1',
+                'min-w-[8rem] overflow-hidden rounded-md border bg-white',
+                'shadow-md animate-in fade-in-0 zoom-in-95',
+                className
+            )}
+        >
             <div className="max-h-60 overflow-y-auto p-1">
                 {children}
             </div>
@@ -160,13 +154,9 @@ export const SelectItem: React.FC<SelectItemProps> = ({ value, children, classNa
             className={cn(
                 'relative flex w-full cursor-pointer select-none items-center rounded-sm py-1.5 pl-8 pr-2',
                 'text-sm outline-none transition-colors duration-150',
-                // 기본 상태
                 'text-gray-900',
-                // 호버 상태 - 더 명확한 배경색
                 'hover:bg-blue-50 hover:text-blue-900',
-                // 선택된 상태
                 isSelected ? 'bg-blue-100 text-blue-900 font-medium' : '',
-                // 포커스 상태
                 'focus:bg-blue-50 focus:text-blue-900',
                 className
             )}
