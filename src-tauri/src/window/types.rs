@@ -13,6 +13,7 @@ pub enum WindowType {
     Statistics,
     Settings,
     ShareTaskInfo,
+    CompanyChat,
 }
 
 impl WindowType {
@@ -28,6 +29,7 @@ impl WindowType {
             Self::Statistics => "statistics",
             Self::Settings => "settings",
             Self::ShareTaskInfo => "share_task_info",
+            Self::CompanyChat => "company_chat",
         }
     }
 
@@ -43,6 +45,7 @@ impl WindowType {
             Self::Statistics => "Nexus Call Hub - 통계 대시보드",
             Self::Settings => "Nexus Call Hub - 환경설정",
             Self::ShareTaskInfo => "공유 업무 정보",
+            Self::CompanyChat => "Nexus Call Hub - Company Chat",
         }
     }
 
@@ -58,6 +61,7 @@ impl WindowType {
             Self::Statistics => (1400.0, 1000.0), // 통계: 대형 화면 (차트 + 대시보드)
             Self::Settings => (600.0, 500.0), // 설정: 작은 크기
             Self::ShareTaskInfo => (1920.0, 1080.0), // 공유 업무 정보: 풀사이즈
+            Self::CompanyChat => (1200.0, 800.0), // Company Chat: 기본 크기
         }
     }
 
@@ -104,5 +108,11 @@ impl WindowType {
             Self::Statistics => Some((150, 100)), // 통계: 오른쪽 아래
             _ => None,                            // 나머지는 센터
         }
+    }
+}
+
+impl Default for WindowType {
+    fn default() -> Self {
+        Self::Login
     }
 }

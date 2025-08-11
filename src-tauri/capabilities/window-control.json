@@ -1,0 +1,9 @@
+{
+    "identifier": "window-control",
+    "permissions": [
+        "core:window:allow-maximize",
+        "core:window:allow-unmaximize",
+        "core:window:allow-is-fullscreen",
+        "core:window:allow-set-fullscreen"
+    ]
+}

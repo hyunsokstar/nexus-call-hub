@@ -4,32 +4,32 @@ import { Button } from "@/shared/ui/button"
 import { useUser } from "@/shared/hooks/useUser"  // 🔐 새로 추가
 import CommonHeader from "@/widgets/CommonHeader"
 
-// 상담사용 앱들 (기존과 동일)
+// 상담사용 앱들: 요청에 따라 "챗봇 테스트", "공유 업무 정보"만 노출
 const consultantApps = [
-    {
-        id: 'inbound',
-        label: '인바운드 상담',
-        icon: '📞',
-        description: '고객 문의 자동 분배',
-        windowType: 'CallInbound',
-        color: 'blue',
-    },
-    {
-        id: 'outbound',
-        label: '아웃바운드 영업',
-        icon: '📱',
-        description: '캠페인 통화 실행',
-        windowType: 'CallOutbound',
-        color: 'green',
-    },
-    {
-        id: 'callbot',
-        label: 'AI 콜봇',
-        icon: '🤖',
-        description: 'AI 자동 상담 시스템',
-        windowType: 'CallBot',
-        color: 'purple',
-    },
+    // {
+    //     id: 'inbound',
+    //     label: '인바운드 상담',
+    //     icon: '📞',
+    //     description: '고객 문의 자동 분배',
+    //     windowType: 'CallInbound',
+    //     color: 'blue',
+    // },
+    // {
+    //     id: 'outbound',
+    //     label: '아웃바운드 영업',
+    //     icon: '📱',
+    //     description: '캠페인 통화 실행',
+    //     windowType: 'CallOutbound',
+    //     color: 'green',
+    // },
+    // {
+    //     id: 'callbot',
+    //     label: 'AI 콜봇',
+    //     icon: '🤖',
+    //     description: 'AI 자동 상담 시스템',
+    //     windowType: 'CallBot',
+    //     color: 'purple',
+    // },
     {
         id: 'chatbot',
         label: '챗봇 테스트',
@@ -39,13 +39,21 @@ const consultantApps = [
         color: 'indigo',
     },
     {
-        id: 'queue-monitor',
-        label: '실시간 대기열',
-        icon: '⏳',
-        description: '현재 대기 상황 모니터링',
-        windowType: 'QueueMonitor',
-        color: 'orange',
+        id: 'company-chat',
+        label: 'Company Chat',
+        icon: '🏢',
+        description: '사내 채팅',
+        windowType: 'CompanyChat',
+        color: 'gray',
     },
+    // {
+    //     id: 'queue-monitor',
+    //     label: '실시간 대기열',
+    //     icon: '⏳',
+    //     description: '현재 대기 상황 모니터링',
+    //     windowType: 'QueueMonitor',
+    //     color: 'orange',
+    // },
     {
         id: 'share-task-info',
         label: '공유 업무 정보',
@@ -56,32 +64,32 @@ const consultantApps = [
     },
 ];
 
-// 관리/분석용 앱들 (공유 업무 정보 추가)
-const managementApps = [
-    {
-        id: 'statistics',
-        label: '통계 대시보드',
-        icon: '📊',
-        description: '상담 현황 분석',
-        windowType: 'Statistics',
-        color: 'orange'
-    },
-    {
-        id: 'settings',
-        label: '환경설정',
-        icon: '⚙️',
-        description: '시스템 설정',
-        windowType: 'Settings',
-        color: 'gray'
-    },
-    {
-        id: 'share-task-info',
-        label: '공유 업무 정보',
-        icon: '🗂️',
-        description: '업무 정보 공유 및 확인',
-        windowType: 'share_task_info', // 동적 생성용 label
-        color: 'blue'
-    }
+// 관리/분석용 앱들: 현재는 비활성화 (필요 시 주석 해제)
+const managementApps: typeof consultantApps = [
+    // {
+    //     id: 'statistics',
+    //     label: '통계 대시보드',
+    //     icon: '📊',
+    //     description: '상담 현황 분석',
+    //     windowType: 'Statistics',
+    //     color: 'orange'
+    // },
+    // {
+    //     id: 'settings',
+    //     label: '환경설정',
+    //     icon: '⚙️',
+    //     description: '시스템 설정',
+    //     windowType: 'Settings',
+    //     color: 'gray'
+    // },
+    // {
+    //     id: 'share-task-info',
+    //     label: '공유 업무 정보',
+    //     icon: '🗂️',
+    //     description: '업무 정보 공유 및 확인',
+    //     windowType: 'share_task_info', // 동적 생성용 label
+    //     color: 'blue'
+    // }
 ]
 
 // AppCard 컴포넌트 (기존과 동일)

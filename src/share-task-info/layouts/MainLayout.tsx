@@ -31,6 +31,7 @@ const MainLayout: React.FC = () => {
                 subtitle="업무 공유 및 일정 관리"
                 icon="📋"
                 showLogout={true}
+                showBackButton={true}
             />
 
             {/* 네비게이션 메뉴 */}

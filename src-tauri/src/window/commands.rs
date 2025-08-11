@@ -50,15 +50,21 @@ pub async fn open_window(app_handle: AppHandle, window_type: WindowType) -> Resu
 
     let _window = builder.build().map_err(|e| e.to_string())?;
 
-    println!("✅ 윈도우 생성: {} (DevTools: {})", config.label, config.devtools);
+    println!(
+        "✅ 윈도우 생성: {} (DevTools: {})",
+        config.label, config.devtools
+    );
     Ok("Window opened successfully".to_string())
 }
 
 /// 개발자 도구 열기 안내 (Tauri v2)
 #[tauri::command]
-pub async fn window_open_devtools(app_handle: AppHandle, label: Option<String>) -> Result<String, String> {
+pub async fn window_open_devtools(
+    app_handle: AppHandle,
+    label: Option<String>,
+) -> Result<String, String> {
     println!("🛠️ 개발자 도구 열기 시도...");
-    
+
     // 윈도우 찾기
     let window = if let Some(label) = label {
         app_handle.get_webview_window(&label)
@@ -69,12 +75,18 @@ pub async fn window_open_devtools(app_handle: AppHandle, label: Option<String>) 
 
     if let Some(window) = window {
         // Tauri v2에서는 with_devtools(true)로 빌드된 윈도우에서만 개발자 도구가 작동
-        println!("🛠️ 윈도우 '{}' - F12를 눌러 개발자 도구를 여세요", window.label());
-        
+        println!(
+            "🛠️ 윈도우 '{}' - F12를 눌러 개발자 도구를 여세요",
+            window.label()
+        );
+
         // 윈도우에 메시지 전송 (개발자 도구 열기 안내)
         // window.emit("devtools-instruction", "F12 키를 눌러 개발자 도구를 열 수 있습니다").map_err(|e| e.to_string())?;
-        
-        Ok(format!("윈도우 '{}'에서 F12를 눌러 개발자 도구를 여세요", window.label()))
+
+        Ok(format!(
+            "윈도우 '{}'에서 F12를 눌러 개발자 도구를 여세요",
+            window.label()
+        ))
     } else {
         Err("활성 윈도우를 찾을 수 없습니다".to_string())
     }
@@ -82,7 +94,10 @@ pub async fn window_open_devtools(app_handle: AppHandle, label: Option<String>) 
 
 /// 개발자 도구 닫기 안내 (Tauri v2)
 #[tauri::command]
-pub async fn window_close_devtools(_app_handle: AppHandle, _label: Option<String>) -> Result<String, String> {
+pub async fn window_close_devtools(
+    _app_handle: AppHandle,
+    _label: Option<String>,
+) -> Result<String, String> {
     println!("🔧 개발자 도구 닫기 시도...");
     Ok("개발자 도구를 닫으려면 개발자 도구 창에서 닫기 버튼을 클릭하세요".to_string())
 }
@@ -92,9 +107,15 @@ pub async fn window_close_devtools(_app_handle: AppHandle, _label: Option<String
 pub async fn window_open_all_devtools(app_handle: AppHandle) -> Result<String, String> {
     let windows = app_handle.webview_windows();
     let count = windows.len();
-    
-    println!("🛠️ 총 {} 개의 윈도우에서 F12로 개발자 도구를 열 수 있습니다", count);
-    Ok(format!("{} 개의 윈도우에서 개발자 도구를 사용할 수 있습니다 (F12)", count))
+
+    println!(
+        "🛠️ 총 {} 개의 윈도우에서 F12로 개발자 도구를 열 수 있습니다",
+        count
+    );
+    Ok(format!(
+        "{} 개의 윈도우에서 개발자 도구를 사용할 수 있습니다 (F12)",
+        count
+    ))
 }
 
 /// 윈도우 닫기

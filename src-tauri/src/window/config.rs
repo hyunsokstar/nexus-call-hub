@@ -61,6 +61,7 @@ impl WindowConfigManager {
             WindowType::Statistics => Self::statistics_config(),
             WindowType::Settings => Self::settings_config(),
             WindowType::ShareTaskInfo => Self::share_task_info_config(),
+            WindowType::CompanyChat => Self::company_chat_config(),
         }
     }
 
@@ -284,6 +285,28 @@ impl WindowConfigManager {
             height: 1080.0,
             min_width: Some(1280.0),
             min_height: Some(800.0),
+            max_width: None,
+            max_height: None,
+            resizable: true,
+            center: true,
+            always_on_top: false,
+            decorations: true,
+            transparent: false,
+            shadow: true,
+            devtools: true,
+        }
+    }
+
+    /// Company Chat 윈도우 설정
+    fn company_chat_config() -> WindowConfig {
+        WindowConfig {
+            label: WindowType::CompanyChat.as_str().to_string(),
+            title: WindowType::CompanyChat.title().to_string(),
+            url: WindowType::CompanyChat.url(),
+            width: 1200.0,
+            height: 800.0,
+            min_width: Some(900.0),
+            min_height: Some(600.0),
             max_width: None,
             max_height: None,
             resizable: true,

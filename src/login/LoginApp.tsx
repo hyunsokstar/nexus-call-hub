@@ -23,16 +23,17 @@ function LoginApp() {
 
             // 🚀 로그인 성공 후 런처로 이동
             console.log('🔄 런처 윈도우로 전환 시작...')
-            await invoke('switch_window', {
-                fromLabel: 'login',
-                toWindowType: 'Launcher'
-            })
-            console.log('✅ 런처 윈도우 전환 완료')
+            // 기본 경로: switch_window (라벨 기반 교체)
+            try {
+                console.log('🔄 switch_window(Login → Launcher) 시도')
+                await invoke('switch_window', { to_window_type: 'Launcher' })
+                console.log('✅ switch_window 성공')
+                return
+            } catch (e1) {
+                console.error('❌ switch_window 실패:', e1)
+            }
 
-        } catch (error) {
-            console.error('❌ 로그인 후 처리 실패:', error)
-
-            // 🔄 실패 시 대안: 런처 윈도우 직접 열기
+            // 대안: open_window + close_window 조합
             try {
                 console.log('🔄 대안: 런처 윈도우 직접 열기 시도...')
                 await invoke('open_window', {
@@ -55,6 +56,8 @@ function LoginApp() {
                 console.error('❌ 대안 방법도 실패:', fallbackError)
                 alert('윈도우 전환에 실패했습니다. 수동으로 런처를 열어주세요.')
             }
+        } catch (error) {
+            console.error('❌ 로그인 후 처리 실패:', error)
         }
     }
 
@@ -75,12 +78,12 @@ function LoginApp() {
     return (
         <>
             {viewMode === 'login' ? (
-                <LoginComponent 
+                <LoginComponent
                     onLoginSuccess={handleLoginSuccess}
                     onSwitchToSignup={switchToSignup}
                 />
             ) : (
-                <SignupComponent 
+                <SignupComponent
                     onSignupSuccess={handleSignupSuccess}
                     onSwitchToLogin={switchToLogin}
                 />
