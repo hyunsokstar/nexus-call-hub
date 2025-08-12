@@ -1,28 +1,23 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 import CommonHeader from '@/widgets/CommonHeader'
 import { getCurrentWindow } from '@tauri-apps/api/window'
 import { RouterProvider } from '@tanstack/react-router'
 import { router } from './router'
+import CreateRoomDialog from './components/CreateRoomDialog'
 
 const CompanyChatApp: React.FC = () => {
     const win = getCurrentWindow()
-    // const maximize = () => win.maximize()
-    // const restore = () => win.unmaximize()
-    // const toggleFullscreen = async () => {
-    //     const isFull = await win.isFullscreen()
-    //     await win.setFullscreen(!isFull)
-    // }
+    const [openCreate, setOpenCreate] = useState(false)
 
     const backToLauncher = async () => {
         try {
             await invoke('switch_window', {
-                // fromLabel: window.location.pathname.split('/').pop()?.replace('.html', '') || 'unknown',
-                fromLabel: win.label,
-                toWindowType: 'Launcher'
+                from_label: win.label,
+                to_window_type: 'Launcher'
             })
         } catch (_) {
-            await invoke('replace_all_windows', { windowType: 'Launcher' })
+            await invoke('replace_all_windows', { window_type: 'Launcher' })
         }
     }
 
@@ -34,12 +29,24 @@ const CompanyChatApp: React.FC = () => {
                 showBackButton
                 onBack={backToLauncher}
             />
-            {/* Window controls (Optional) */}
-            {/* 방 추가 버튼 오른쪽 상단에 추가 */}
-            {/* 방추가 버튼 클릭하면 다이어로그 출력 되게 방 만들기 폼 */}
+            {/* 우측 상단: 방 추가 버튼 */}
+            <div className="px-4 pt-3 flex justify-end">
+                <button
+                    onClick={() => setOpenCreate(true)}
+                    className="text-xs px-3 py-1.5 border rounded bg-white hover:bg-gray-50 shadow-sm"
+                >
+                    방 추가
+                </button>
+            </div>
+            {/* 본문 */}
             <main className="flex-1 bg-white rounded-md border m-4 p-4 overflow-hidden">
                 <RouterProvider router={router} />
             </main>
+
+            {/* 방 생성 다이얼로그 */}
+            {openCreate && (
+                <CreateRoomDialog open={openCreate} onOpenChange={setOpenCreate} />
+            )}
         </div>
     )
 }
