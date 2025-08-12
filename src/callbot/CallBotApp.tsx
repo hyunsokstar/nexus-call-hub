@@ -149,7 +149,6 @@ function CallBotApp() {
                 subtitle="자동 상담 시스템"
                 icon="🤖"
                 showBackButton={true}
-                showLogout={false}
             />
 
             <main className="p-6">

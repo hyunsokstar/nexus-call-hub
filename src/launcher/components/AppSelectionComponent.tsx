@@ -196,7 +196,6 @@ function AppSelectionComponent() {  // 🔧 props 제거
                 subtitle="통합 상담 시스템"
                 icon="N"
                 showBackButton={false}
-                showLogout={true}
             />
 
             {/* Main Content */}
