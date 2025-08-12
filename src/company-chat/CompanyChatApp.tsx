@@ -35,10 +35,8 @@ const CompanyChatApp: React.FC = () => {
                 onBack={backToLauncher}
             />
             {/* Window controls (Optional) */}
-            {/* <div className="px-4 pt-3 flex gap-2">
-                <button onClick={maximize} className="text-xs px-2 py-1 border rounded hover:bg-gray-50">최대화</button>
-                <button onClick={restore} className="text-xs px-2 py-1 border rounded hover:bg-gray-50">복원</button>
-            </div> */}
+            {/* 방 추가 버튼 오른쪽 상단에 추가 */}
+            {/* 방추가 버튼 클릭하면 다이어로그 출력 되게 방 만들기 폼 */}
             <main className="flex-1 bg-white rounded-md border m-4 p-4 overflow-hidden">
                 <RouterProvider router={router} />
             </main>
