@@ -124,7 +124,7 @@ const BoilerplateCreatePage: React.FC = () => {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload),
             });
-            if (response.ok) navigate({ to: "/boilerplate/list" });
+            if (response.ok) navigate({ to: "/" });
         } catch (err) {
             console.error("저장 실패:", err);
         } finally {
@@ -404,7 +404,7 @@ const BoilerplateCreatePage: React.FC = () => {
 
                 {/* 하단 액션 바 */}
                 <div className="sticky bottom-0 border-t bg-white p-2 flex gap-2">
-                    <Button type="button" variant="outline" onClick={() => navigate({ to: "/boilerplate/list" })}>
+                    <Button type="button" variant="outline" onClick={() => navigate({ to: "/" })}>
                         취소
                     </Button>
                     <HeadlessButton

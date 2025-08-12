@@ -7,12 +7,12 @@ import { router } from './router'
 
 const CompanyChatApp: React.FC = () => {
     const win = getCurrentWindow()
-    const maximize = () => win.maximize()
-    const restore = () => win.unmaximize()
-    const toggleFullscreen = async () => {
-        const isFull = await win.isFullscreen()
-        await win.setFullscreen(!isFull)
-    }
+    // const maximize = () => win.maximize()
+    // const restore = () => win.unmaximize()
+    // const toggleFullscreen = async () => {
+    //     const isFull = await win.isFullscreen()
+    //     await win.setFullscreen(!isFull)
+    // }
 
     const backToLauncher = async () => {
         try {

@@ -18,7 +18,7 @@ const BoilerplateListPage: React.FC = () => {
                     <h1 className="text-2xl font-bold">보일러플레이트 목록</h1>
                     <p className="text-gray-600 mt-1">저장된 보일러플레이트를 검색하고 관리하세요</p>
                 </div>
-                <Button onClick={() => navigate({ to: '/boilerplate/create' })}>
+                <Button onClick={() => navigate({ to: '/' })}>
                     <Plus className="h-4 w-4 mr-2" />
                     새 보일러플레이트
                 </Button>
