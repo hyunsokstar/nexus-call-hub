@@ -54,6 +54,7 @@ export default defineConfig({
         statistics: path.resolve(__dirname, 'statistics.html'),
         settings: path.resolve(__dirname, 'settings.html'),
         share_task_info: path.resolve(__dirname, 'share_task_info.html'),
+        company_chat: path.resolve(__dirname, 'company_chat.html'),
       }
     }
   },

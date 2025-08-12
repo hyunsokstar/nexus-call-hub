@@ -13,11 +13,11 @@ const CompanyChatApp: React.FC = () => {
     const backToLauncher = async () => {
         try {
             await invoke('switch_window', {
-                from_label: win.label,
-                to_window_type: 'Launcher'
+                fromLabel: win.label,
+                toWindowType: 'Launcher'
             })
         } catch (_) {
-            await invoke('replace_all_windows', { window_type: 'Launcher' })
+            await invoke('replace_all_windows', { windowType: 'Launcher' })
         }
     }
 

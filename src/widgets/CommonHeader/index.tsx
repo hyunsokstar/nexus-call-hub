@@ -29,10 +29,10 @@ function CommonHeader({
             onBack()
         } else {
             try {
-                await invoke('switch_window', {
-                    fromLabel: window.location.pathname.split('/').pop()?.replace('.html', '') || 'unknown',
-                    toWindowType: 'Launcher'
-                })
+            await invoke('switch_window', {
+                fromLabel: window.location.pathname.split('/').pop()?.replace('.html', '') || 'unknown',
+                toWindowType: 'Launcher'
+            })
             } catch (error) {
                 console.error('런처로 돌아가기 실패:', error)
             }

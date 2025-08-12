@@ -36,6 +36,25 @@ function LoginComponent({ onLoginSuccess, onSwitchToSignup }: LoginComponentProp
                     token: result.data.token
                 }
 
+                // 🔧 Tauri State에 사용자 정보 저장 (이미 구현된 auth_state.rs 활용)
+                try {
+                    await import("@tauri-apps/api/core").then(({ invoke }) => 
+                        invoke('set_user_state', { user })
+                    );
+                    console.log('✅ Tauri State 저장 완료');
+                } catch (tauriError) {
+                    console.error('❌ Tauri State 저장 실패:', tauriError);
+                }
+
+                // 🔧 로컬 스토리지에도 저장
+                try {
+                    localStorage.setItem('auth_user', JSON.stringify(user));
+                    localStorage.setItem('auth_token', user.token);
+                    console.log('✅ 로컬 스토리지 저장 완료');
+                } catch (storageError) {
+                    console.error('❌ 로컬 스토리지 저장 실패:', storageError);
+                }
+
                 // 부모 컴포넌트에 로그인 성공 알림
                 onLoginSuccess(user)
             } else {

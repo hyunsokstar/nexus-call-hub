@@ -14,19 +14,19 @@ function LoginApp() {
         console.log('🎯 LoginApp: 로그인 성공 콜백 호출됨', user)
 
         try {
-            // 🎯 Tauri State에 사용자 정보 저장
-            console.log('📝 사용자 정보를 Tauri State에 저장 중...')
-            await invoke('set_user_state', {
-                user: user
-            })
-            console.log('✅ Tauri State 저장 완료')
+            // 🎯 auth_state.rs의 set_user_state 활용
+            console.log('📝 사용자 정보를 Tauri AuthState에 저장 중...')
+            await invoke('set_user_state', { user })
+            console.log('✅ Tauri AuthState 저장 완료')
 
             // 🚀 로그인 성공 후 런처로 이동
             console.log('🔄 런처 윈도우로 전환 시작...')
-            // 기본 경로: switch_window (라벨 기반 교체)
             try {
                 console.log('🔄 switch_window(Login → Launcher) 시도')
-                await invoke('switch_window', { to_window_type: 'Launcher' })
+                await invoke('switch_window', {
+                    fromLabel: 'login',
+                    toWindowType: 'Launcher'
+                })
                 console.log('✅ switch_window 성공')
                 return
             } catch (e1) {
