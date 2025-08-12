@@ -1,23 +1,24 @@
-// C:\pilot-tauri\nexus-call-hub\src\launcher\api\client.ts
+// C:\nexus-call-hub\src\shared\api\client.ts
 import axios from 'axios'
+import { getAuthToken } from '../auth/token'
 
 // 환경별 API 서버 설정
 const getApiBaseUrl = () => {
     // 개발 환경 체크 (Vite 개발 서버)
     if (import.meta.env.DEV) {
-        console.log('🔧 개발 환경 - 로컬 Spring Boot 서버 사용');
-        return 'http://localhost:8080';
+        console.log('🔧 개발 환경 - 로컬 Spring Boot 서버 사용')
+        return 'http://localhost:8080'
     }
 
     // Tauri 앱 환경 체크
     if (typeof window !== 'undefined' && (window as any).__TAURI__) {
-        console.log('📱 Tauri 앱 환경 - EC2 서버 사용');
-        return 'http://43.200.234.52:8080';
+        console.log('📱 Tauri 앱 환경 - EC2 서버 사용')
+        return 'http://43.200.234.52:8080'
     }
 
     // 기본값 (브라우저에서 빌드된 것)
-    console.log('🌐 브라우저 환경 - EC2 서버 사용');
-    return 'http://43.200.234.52:8080';
+    console.log('🌐 브라우저 환경 - EC2 서버 사용')
+    return 'http://43.200.234.52:8080'
 };
 
 // API 베이스 설정
@@ -33,16 +34,14 @@ export const apiClient = axios.create({
 // 요청 인터셉터 (토큰 자동 추가)
 apiClient.interceptors.request.use(
     (config) => {
-        // 추후 토큰이 필요한 요청에 자동으로 토큰 추가
-        // const token = getStoredToken()
-        // if (token) {
-        //   config.headers.Authorization = `Bearer ${token}`
-        // }
+        const token = getAuthToken()
+        if (token) {
+            config.headers = config.headers ?? {}
+            ;(config.headers as any).Authorization = `Bearer ${token}`
+        }
         return config
     },
-    (error) => {
-        return Promise.reject(error)
-    }
+    (error) => Promise.reject(error)
 )
 
 // 응답 인터셉터 (에러 처리)

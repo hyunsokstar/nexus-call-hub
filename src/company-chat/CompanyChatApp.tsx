@@ -2,6 +2,8 @@ import React from 'react'
 import { invoke } from '@tauri-apps/api/core'
 import CommonHeader from '@/widgets/CommonHeader'
 import { getCurrentWindow } from '@tauri-apps/api/window'
+import { RouterProvider } from '@tanstack/react-router'
+import { router } from './router'
 
 const CompanyChatApp: React.FC = () => {
     const win = getCurrentWindow()
@@ -33,13 +35,12 @@ const CompanyChatApp: React.FC = () => {
                 onBack={backToLauncher}
             />
             {/* Window controls (Optional) */}
-            <div className="px-4 pt-3 flex gap-2">
+            {/* <div className="px-4 pt-3 flex gap-2">
                 <button onClick={maximize} className="text-xs px-2 py-1 border rounded hover:bg-gray-50">최대화</button>
                 <button onClick={restore} className="text-xs px-2 py-1 border rounded hover:bg-gray-50">복원</button>
-                <button onClick={toggleFullscreen} className="text-xs px-2 py-1 border rounded hover:bg-gray-50">전체화면 토글</button>
-            </div>
-            <main className="flex-1 bg-white rounded-md border m-4 p-4">
-                <p className="text-sm text-gray-600">여기에 사내 채팅 UI를 구성하세요.</p>
+            </div> */}
+            <main className="flex-1 bg-white rounded-md border m-4 p-4 overflow-hidden">
+                <RouterProvider router={router} />
             </main>
         </div>
     )
