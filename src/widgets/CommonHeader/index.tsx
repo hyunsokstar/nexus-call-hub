@@ -1,142 +1,89 @@
 // C:\pilot-tauri\nexus-call-hub\src\widgets\CommonHeader\index.tsx
-import { useUser } from "@/shared/hooks/useUser"
-import { Button } from "@/shared/ui/button"
-import { invoke } from "@tauri-apps/api/core"
+import React from 'react'
+import { useUser } from '@/shared/hooks/useUser'
+import { ChevronLeft, LogOut } from 'lucide-react'
 
-interface CommonHeaderProps {
+interface Props {
     title: string
     subtitle?: string
     icon?: string
     showBackButton?: boolean
     onBack?: () => void
-    showLogout?: boolean
-    customActions?: React.ReactNode
 }
 
-function CommonHeader({
+const CommonHeader: React.FC<Props> = ({
     title,
     subtitle,
-    icon = "📞",
-    showBackButton = false,
-    onBack,
-    showLogout = true,
-    customActions
-}: Omit<CommonHeaderProps, 'user'>) {  // user prop 제거
-    const { user, logout, isLoggingOut } = useUser(); // 🔐 새로운 useUser 훅 사용
-
-    const handleBack = async () => {
-        if (onBack) {
-            onBack()
-        } else {
-            try {
-            await invoke('switch_window', {
-                fromLabel: window.location.pathname.split('/').pop()?.replace('.html', '') || 'unknown',
-                toWindowType: 'Launcher'
-            })
-            } catch (error) {
-                console.error('런처로 돌아가기 실패:', error)
-            }
-        }
-    }
+    icon,
+    showBackButton,
+    onBack
+}) => {
+    const { user, isLoggedIn, logout } = useUser()
 
     const handleLogout = async () => {
         try {
-            // 🔥 먼저 로그인 윈도우를 생성
-            await invoke('open_window', {
-                windowType: 'Login'
-            })
-
-            // 🔐 새로운 auth_state 기반 로그아웃
             await logout()
-
-            // 🔥 현재 윈도우만 닫기
-            const currentLabel = window.location.pathname.split('/').pop()?.replace('.html', '') || 'launcher'
-            await invoke('close_window', {
-                label: currentLabel
-            })
-
         } catch (error) {
             console.error('로그아웃 실패:', error)
-            try {
-                await invoke('replace_all_windows', {
-                    windowType: 'Login'
-                })
-            } catch (fallbackError) {
-                console.error('로그인 윈도우 열기 실패:', fallbackError)
-            }
         }
     }
 
     return (
-        <header className="bg-[#55BEC8] border-b border-gray-200 px-4 py-2">
-            <div className="flex items-center justify-between">
-                {/* 왼쪽 영역 - 타이틀 */}
-                <div className="flex items-center gap-3">
-                    {showBackButton && (
-                        <Button
-                            onClick={handleBack}
-                            variant="outline"
-                            size="sm"
-                            className="text-xs px-2 py-1 h-7"
-                        >
-                            ← 메인
-                        </Button>
-                    )}
+        <header className="bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg">
+            <div className="px-6 py-4">
+                <div className="flex items-center justify-between">
+                    {/* 왼쪽: 뒤로가기 + 타이틀 */}
+                    <div className="flex items-center gap-3">
+                        {showBackButton && (
+                            <button
+                                onClick={onBack}
+                                className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors duration-200 backdrop-blur-sm"
+                                aria-label="뒤로가기"
+                            >
+                                <ChevronLeft size={20} />
+                            </button>
+                        )}
 
-                    <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 bg-blue-600 rounded-md flex items-center justify-center">
-                            <span className="text-white text-sm">{icon}</span>
-                        </div>
-                        <div>
-                            <h1 className="text-lg font-semibold text-gray-900">{title}</h1>
-                            {subtitle && (
-                                <p className="text-sm text-gray-600 -mt-0.5">{subtitle}</p>
+                        <div className="flex items-center gap-3">
+                            {icon && (
+                                <div className="text-2xl bg-white/10 rounded-lg p-2 backdrop-blur-sm">
+                                    {icon}
+                                </div>
                             )}
+                            <div>
+                                <h1 className="text-xl font-semibold tracking-tight">{title}</h1>
+                                {subtitle && (
+                                    <p className="text-sm text-white/80 mt-0.5">{subtitle}</p>
+                                )}
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                {/* 오른쪽 영역 - 사용자 정보 */}
-                <div className="flex items-center gap-3">
-                    {customActions}
-
-                    {user ? (
+                    {/* 오른쪽: 사용자 정보 */}
+                    {isLoggedIn && user && (
                         <div className="flex items-center gap-3">
-                            {/* 사용자 정보 */}
-                            <div className="text-right">
-                                <p className="text-sm font-medium text-gray-900">{user.name}</p>
-                                <p className="text-xs text-gray-500">
-                                    {user.department} · {user.role}
-                                </p>
+                            <div className="hidden sm:block text-right">
+                                <div className="text-sm font-medium">{user.name}</div>
+                                <div className="text-xs text-white/70">{user.department} · {user.role}</div>
                             </div>
 
-                            {/* 아바타 */}
-                            <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                                <span className="text-blue-600 text-sm font-medium">
-                                    {user.name?.[0] || '?'}
-                                </span>
-                            </div>
+                            <div className="flex items-center gap-2">
+                                {/* 사용자 아바타 */}
+                                <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/30">
+                                    <span className="text-sm font-semibold">
+                                        {user.name.charAt(0).toUpperCase()}
+                                    </span>
+                                </div>
 
-                            {/* 로그아웃 버튼 */}
-                            {showLogout && (
-                                <Button
+                                {/* 로그아웃 버튼 */}
+                                <button
                                     onClick={handleLogout}
-                                    variant="outline"
-                                    size="sm"
-                                    className="text-xs px-3 py-1 h-7 border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300"
-                                    disabled={isLoggingOut}
+                                    className="p-2 rounded-lg bg-white/10 hover:bg-red-500/20 transition-colors duration-200 backdrop-blur-sm group"
+                                    title="로그아웃"
                                 >
-                                    {isLoggingOut ? '로그아웃 중...' : '로그아웃'}
-                                </Button>
-                            )}
-                        </div>
-                    ) : (
-                        // 로그인되지 않은 상태
-                        <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
-                                <span className="text-gray-400 text-sm">👤</span>
+                                    <LogOut size={16} className="group-hover:text-red-200" />
+                                </button>
                             </div>
-                            <span className="text-sm text-gray-500">로그인이 필요합니다</span>
                         </div>
                     )}
                 </div>
