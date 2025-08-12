@@ -1,8 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { fetchRooms, Room, createRoomApi } from '../api/rooms'
+import { fetchRooms, createRoomApi } from '../api/rooms'
+import { ChatRoom } from '@/shared/api/types'
 
 export function useRooms() {
-    return useQuery<Room[]>({
+    return useQuery<ChatRoom[]>({
         queryKey: ['company-chat', 'rooms'],
         queryFn: ({ signal }) => fetchRooms(signal),
         staleTime: 30_000,

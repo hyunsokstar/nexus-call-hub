@@ -51,3 +51,26 @@ export interface User {
     token: string;
     permissions?: string[];   // 선택적
 }
+
+// Company Chat API 타입들
+export interface ChatUser {
+    id: number | null;
+    username: string;
+}
+
+export interface ChatRoom {
+    id: string;
+    name: string;
+    creator: ChatUser;
+    createdAt: string;
+    messageCount: number;
+    lastMessageAt: string | null;
+}
+
+export interface ChatMessage {
+    id: string;
+    content: string;
+    sender: ChatUser;
+    roomId: string;
+    createdAt: string;
+}

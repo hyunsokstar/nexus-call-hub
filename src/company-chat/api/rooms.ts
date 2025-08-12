@@ -1,13 +1,8 @@
 import { apiClient } from '@/shared/api/client'
+import { ChatRoom } from '@/shared/api/types'
 
-export interface Room {
-    id: string
-    name: string
-    lastMessage?: string
-}
-
-export async function fetchRooms(signal?: AbortSignal): Promise<Room[]> {
-    const res = await apiClient.get<Room[]>('/api/chatting/rooms', { signal })
+export async function fetchRooms(signal?: AbortSignal): Promise<ChatRoom[]> {
+    const res = await apiClient.get<ChatRoom[]>('/api/chatting/rooms', { signal })
     return res.data
 }
 
