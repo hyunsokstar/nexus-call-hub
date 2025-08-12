@@ -105,23 +105,6 @@ const CallInboundApp = () => {
         return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     };
 
-    const getStatusColor = (status: AgentStatus) => {
-        switch (status) {
-            case 'available': return 'bg-green-500';
-            case 'busy': return 'bg-red-500';
-            case 'break': return 'bg-yellow-500';
-            case 'offline': return 'bg-gray-500';
-        }
-    };
-
-    const getStatusText = (status: AgentStatus) => {
-        switch (status) {
-            case 'available': return '대기중';
-            case 'busy': return '통화중';
-            case 'break': return '휴식중';
-            case 'offline': return '오프라인';
-        }
-    };
 
     const getPriorityColor = (priority: string) => {
         switch (priority) {
@@ -158,18 +141,6 @@ const CallInboundApp = () => {
                 subtitle="고객 문의 자동 분배"
                 icon="📞"
                 showBackButton={true}
-                customActions={
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <div style={{
-                            width: '12px',
-                            height: '12px',
-                            borderRadius: '50%'
-                        }} className={getStatusColor(agentStatus)}></div>
-                        <span style={{ fontSize: '14px', fontWeight: '500' }}>
-                            {getStatusText(agentStatus)}
-                        </span>
-                    </div>
-                }
             />
 
             <div style={{ flex: 1, display: 'flex' }}>
