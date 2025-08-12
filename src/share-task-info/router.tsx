@@ -61,7 +61,7 @@ const indexRoute = createRoute({
     getParentRoute: () => rootRoute,
     path: '/',
     beforeLoad: () => {
-        throw redirect({ to: '/boilerplate' });
+        throw redirect({ to: '/boilerplate' as any });
     },
 });
 
@@ -83,9 +83,4 @@ export const router = createRouter({
     history: createHashHistory(),
 });
 
-declare module '@tanstack/react-router' {
-    interface Register {
-        router: typeof router;
-    }
-}
 
